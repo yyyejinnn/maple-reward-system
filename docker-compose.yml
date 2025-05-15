@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  auth:
+    build:
+      context: .
+      dockerfile: apps/auth/Dockerfile
+    ports:
+      - '3001:3001'
+
+  event:
+    build:
+      context: .
+      dockerfile: apps/event/Dockerfile
+    ports:
+      - '3002:3002'
+
+  gateway:
+    build:
+      context: .
+      dockerfile: apps/gateway/Dockerfile
+    ports:
+      - '3000:3000'
+
+    depends_on:
+      - auth
+      - event
