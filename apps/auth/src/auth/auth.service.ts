@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from 'apps/auth/schemas/user.schema';
 import { Model } from 'mongoose';
+import { CreateAccessTokenReqDto } from './dto/post.create-access-token.req.dto';
 import { RegisterReqDTO } from './dto/post.register.req.dto';
 
 @Injectable()
@@ -39,11 +40,8 @@ export class AuthService {
     return null;
   }
 
-  async login(user) {
-    const { id, email, role } = user;
-
-    const payload = { id, email, role };
-
+  async createAccessToken(dto: CreateAccessTokenReqDto) {
+    const payload = dto;
     const accessToken = this.jwtService.sign(payload);
 
     return { accessToken };

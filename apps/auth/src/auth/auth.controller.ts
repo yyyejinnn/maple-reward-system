@@ -1,33 +1,36 @@
 import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LocalAuthGuard } from 'apps/auth/src/auth/guard/local.guard';
+import { MessagePattern, Payload } from '@nestjs/microservices';
+import { AuthPatterns } from 'libs/constants/patterns/auth.patterns';
 import { RegisterReqDTO } from './dto/post.register.req.dto';
+import { CreateAccessTokenReqDto } from './dto/post.create-access-token.req.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Get()
-  getHello(): string {
-    return this.authService.getHello();
-  }
-
-  @Post('/register')
-  async register(@Body() dto: RegisterReqDTO) {
+  @MessagePattern({ cmd: AuthPatterns.Register })
+  async register(@Payload() dto: RegisterReqDTO) {
     return await this.authService.register(dto);
   }
 
-  @UseGuards(LocalAuthGuard)
-  @Post('/login')
-  async login(@Request() req) {
-    const { user } = req; // deco 수정예정
-
-    return this.authService.login(user);
+  @MessagePattern({ cmd: AuthPatterns.CreateAccessToken })
+  async createAccessToken(@Payload() dto: CreateAccessTokenReqDto) {
+    return this.authService.createAccessToken(dto);
   }
+
+  // @UseGuards(LocalAuthGuard)
+  // @Post('/login')
+  // async login(@Request() req) {
+  //   const { user } = req; // deco 수정예정
+
+  //   return this.authService.login(user);
+  // }
 
   // @UseGuards(JwtAuthGuard)
-  @Get('test')
-  async test(@Request() req) {
-    return req.user;
-  }
+  // @Get('test')
+  // @MessagePattern({ cmd: 'test' })
+  // async test() {
+  //   return 'pong';
+  // }
 }
