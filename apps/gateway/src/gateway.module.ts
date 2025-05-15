@@ -4,6 +4,8 @@ import { GatewayService } from './gateway.service';
 import { ConfigModule } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AUTH_SERVICE, EVENT_SERVICE } from 'libs/constants/tokens/service.tokens';
+import { LocalStrategy } from '../strategy/local.strategy';
+import { JwtStrategy } from '../strategy/jwt.strategy';
 
 @Module({
   imports: [
@@ -34,6 +36,6 @@ import { AUTH_SERVICE, EVENT_SERVICE } from 'libs/constants/tokens/service.token
     ]),
   ],
   controllers: [GatewayController],
-  providers: [GatewayService],
+  providers: [GatewayService, LocalStrategy, JwtStrategy],
 })
 export class GatewayModule {}

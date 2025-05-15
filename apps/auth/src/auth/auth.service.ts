@@ -5,6 +5,7 @@ import { User, UserDocument } from 'apps/auth/schemas/user.schema';
 import { Model } from 'mongoose';
 import { CreateAccessTokenReqDto } from './dto/post.create-access-token.req.dto';
 import { RegisterReqDTO } from './dto/post.register.req.dto';
+import { ValidateUserReqDTO } from './dto/post.validate-user.req.dto';
 
 @Injectable()
 export class AuthService {
@@ -29,7 +30,9 @@ export class AuthService {
     return { msg: '회원가입 성공' };
   }
 
-  async validateUser(email: string, pwd: string) {
+  async validateUser(dto: ValidateUserReqDTO) {
+    const { email, password: pwd } = dto;
+
     const user = await this.userModel.findOne({ email, password: pwd });
 
     if (user && user.password === pwd) {

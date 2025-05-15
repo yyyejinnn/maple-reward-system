@@ -4,6 +4,7 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 import { AuthPatterns } from 'libs/constants/patterns/auth.patterns';
 import { RegisterReqDTO } from './dto/post.register.req.dto';
 import { CreateAccessTokenReqDto } from './dto/post.create-access-token.req.dto';
+import { ValidateUserReqDTO } from './dto/post.validate-user.req.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -17,6 +18,11 @@ export class AuthController {
   @MessagePattern({ cmd: AuthPatterns.CreateAccessToken })
   async createAccessToken(@Payload() dto: CreateAccessTokenReqDto) {
     return this.authService.createAccessToken(dto);
+  }
+
+  @MessagePattern({ cmd: AuthPatterns.ValidateUser })
+  async validateUser(@Payload() dto: ValidateUserReqDTO) {
+    return this.authService.validateUser(dto);
   }
 
   // @UseGuards(LocalAuthGuard)
