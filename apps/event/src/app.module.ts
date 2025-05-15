@@ -1,16 +1,13 @@
 import { Module } from '@nestjs/common';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { join } from 'path';
-import { UserSchema } from './user.schema';
+import { EventModule } from './event/event.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: 'apps/auth/.env.auth',
+      envFilePath: 'apps/event/.env.event',
     }),
 
     MongooseModule.forRootAsync({
@@ -20,9 +17,8 @@ import { UserSchema } from './user.schema';
       }),
       inject: [ConfigService],
     }),
-  ],
 
-  controllers: [AuthController],
-  providers: [AuthService],
+    EventModule,
+  ],
 })
-export class AuthModule {}
+export class EventAPPModule {}
