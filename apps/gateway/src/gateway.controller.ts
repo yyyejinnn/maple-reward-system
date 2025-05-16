@@ -1,11 +1,11 @@
 import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
 import { GatewayService } from './gateway.service';
 import { LocalAuthGuard } from 'apps/gateway/guard/local.guard';
-import { RegisterReqDTO } from 'apps/auth/src/auth/dto/post.register.req.dto';
 import { JwtAuthGuard } from '../guard/jwt.guard';
 import { CreateEventReqDto } from './dto/post.create.event.req.dto';
 import { User } from '../decorators/user.decorator';
 import { AuthUser } from '../interfaces/auth-user.interface';
+import { RegisterReqDTO } from './dto/post.register.req.dto';
 
 @Controller()
 export class GatewayController {
@@ -30,9 +30,7 @@ export class GatewayController {
 
   @UseGuards(LocalAuthGuard)
   @Post('/auth/login')
-  async login(@Request() req) {
-    const { user } = req; // deco 수정예정
-
+  async login(@User() user: AuthUser) {
     return await this.gatewayService.login(user);
   }
 

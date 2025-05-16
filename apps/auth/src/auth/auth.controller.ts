@@ -2,26 +2,26 @@ import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common'
 import { AuthService } from './auth.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { AuthPatterns } from 'libs/constants/patterns/auth.patterns';
-import { RegisterReqDTO } from './dto/post.register.req.dto';
-import { CreateAccessTokenReqDto } from './dto/post.create-access-token.req.dto';
-import { ValidateUserReqDTO } from './dto/post.validate-user.req.dto';
+import { ValidateUserPayloadDTO } from './dto/validate-user.payload.dto';
+import { CreateAccessTokenPayloadDto } from './dto/create-access-token.payload.dto';
+import { RegisterPayloadDTO } from './dto/register.payload.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @MessagePattern({ cmd: AuthPatterns.Register })
-  async register(@Payload() dto: RegisterReqDTO) {
+  async register(@Payload() dto: RegisterPayloadDTO) {
     return await this.authService.register(dto);
   }
 
   @MessagePattern({ cmd: AuthPatterns.CreateAccessToken })
-  async createAccessToken(@Payload() dto: CreateAccessTokenReqDto) {
+  async createAccessToken(@Payload() dto: CreateAccessTokenPayloadDto) {
     return this.authService.createAccessToken(dto);
   }
 
   @MessagePattern({ cmd: AuthPatterns.ValidateUser })
-  async validateUser(@Payload() dto: ValidateUserReqDTO) {
+  async validateUser(@Payload() dto: ValidateUserPayloadDTO) {
     return this.authService.validateUser(dto);
   }
 

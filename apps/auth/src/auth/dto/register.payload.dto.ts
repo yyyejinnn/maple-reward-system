@@ -1,4 +1,4 @@
-export class ValidateUserReqDTO {
+export class RegisterPayloadDTO {
   email: string;
   password: string;
 }

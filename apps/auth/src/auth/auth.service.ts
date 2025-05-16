@@ -3,9 +3,9 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from 'apps/auth/schemas/user.schema';
 import { Model } from 'mongoose';
-import { CreateAccessTokenReqDto } from './dto/post.create-access-token.req.dto';
-import { RegisterReqDTO } from './dto/post.register.req.dto';
-import { ValidateUserReqDTO } from './dto/post.validate-user.req.dto';
+import { ValidateUserPayloadDTO } from './dto/validate-user.payload.dto';
+import { CreateAccessTokenPayloadDto } from './dto/create-access-token.payload.dto';
+import { RegisterPayloadDTO } from './dto/register.payload.dto';
 
 @Injectable()
 export class AuthService {
@@ -18,7 +18,7 @@ export class AuthService {
     return `Auth! ${process.env.PORT}, ${process.env.MONGO_URI}`;
   }
 
-  async register(dto: RegisterReqDTO) {
+  async register(dto: RegisterPayloadDTO) {
     const { email, password } = dto;
 
     // 유효성 체크
@@ -30,7 +30,7 @@ export class AuthService {
     return { msg: '회원가입 성공' };
   }
 
-  async validateUser(dto: ValidateUserReqDTO) {
+  async validateUser(dto: ValidateUserPayloadDTO) {
     const { email, password: pwd } = dto;
 
     const user = await this.userModel.findOne({ email, password: pwd });
@@ -43,7 +43,7 @@ export class AuthService {
     return null;
   }
 
-  async createAccessToken(dto: CreateAccessTokenReqDto) {
+  async createAccessToken(dto: CreateAccessTokenPayloadDto) {
     const payload = dto;
     const accessToken = this.jwtService.sign(payload);
 
