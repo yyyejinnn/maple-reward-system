@@ -10,6 +10,8 @@ import { RewardPatterns } from 'libs/constants/patterns/reward.patterns';
 import { CreateRewardReqDto } from './dto/post.create-reward.req.dto';
 import { CreateEventPayloadDto } from 'apps/event/src/event/dto/create-event.payload.dto';
 import { CreateRewardPayloadDto } from 'apps/event/src/reward/dto/create-reward.payload.dto';
+import { CreateRewardClaimReqDto } from './dto/post.create-reward-claim.req.dto';
+import { RewardClaimPatterns } from 'libs/constants/patterns/reward-claim.patterns';
 
 @Injectable()
 export class GatewayService {
@@ -72,6 +74,42 @@ export class GatewayService {
   async getRewardById(id: string) {
     const payload = { id }; // 24자 체크 필요
     const result = this.eventClient.send({ cmd: RewardPatterns.GetRewardById }, payload);
+
+    return result;
+  }
+
+  // claim
+  async createRewardCliam(dto: CreateRewardClaimReqDto, user: AuthUser) {
+    const { id } = user;
+    const { rewardId } = dto;
+
+    const payload = { userId: id, rewardId };
+    const result = this.eventClient.send({ cmd: RewardClaimPatterns.CreateRewardCliam }, payload);
+
+    return result;
+  }
+
+  async listRewardClaims() {
+    const result = this.eventClient.send({ cmd: RewardClaimPatterns.ListRewardCliams }, {});
+
+    return result;
+  }
+
+  async getRewardClaimById(id: string) {
+    const payload = { id };
+    const result = this.eventClient.send({ cmd: RewardClaimPatterns.GetRewardCliamById }, payload);
+
+    return result;
+  }
+
+  async getMyRewardClaim(user: AuthUser) {
+    const { id } = user;
+    const payload = { userId: id };
+
+    const result = this.eventClient.send(
+      { cmd: RewardClaimPatterns.GetRewardCliamByUserId },
+      payload,
+    );
 
     return result;
   }

@@ -1,5 +1,5 @@
 export enum AuthPatterns {
-  ValidateUser = 'auth.validateUser',
+  ValidateUser = 'auth.validate-user',
   Register = 'auth.register',
-  CreateAccessToken = 'auth.createAccessToken',
+  CreateAccessToken = 'auth.create-access-token',
 }

@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { EventModule } from './event/event.module';
 import { RewardModule } from './reward/reward.module';
+import { RewardClaimModule } from './reward-claim/reward-claim.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { RewardModule } from './reward/reward.module';
 
     EventModule,
     RewardModule,
+    RewardClaimModule,
   ],
 })
 export class EventAPPModule {}

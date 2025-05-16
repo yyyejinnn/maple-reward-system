@@ -1,5 +1,5 @@
 export enum EventPatterns {
-  CreateEvent = 'event.CreateEvent',
-  ListEvents = 'event.ListEvents',
-  GetEventById = 'event.getEventById',
+  CreateEvent = 'event.create-event',
+  ListEvents = 'event.list-events',
+  GetEventById = 'event.get-event-by-id',
 }

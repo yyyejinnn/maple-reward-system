@@ -7,6 +7,7 @@ import { User } from '../decorators/user.decorator';
 import { AuthUser } from '../interfaces/auth-user.interface';
 import { RegisterReqDTO } from './dto/post.register.req.dto';
 import { CreateRewardReqDto } from './dto/post.create-reward.req.dto';
+import { CreateRewardClaimReqDto } from './dto/post.create-reward-claim.req.dto';
 
 @Controller()
 export class GatewayController {
@@ -72,5 +73,31 @@ export class GatewayController {
   @Get('/rewards/:id')
   async getRewardById(@Param('id') id: string) {
     return this.gatewayService.getRewardById(id);
+  }
+
+  // event - claims
+  @UseGuards(JwtAuthGuard)
+  @Post('/reward-claims')
+  async createRewardCliam(@Body() dto: CreateRewardClaimReqDto, @User() user: AuthUser) {
+    return await this.gatewayService.createRewardCliam(dto, user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/reward-claims')
+  async listRewardClaims() {
+    return this.gatewayService.listRewardClaims();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/reward-claims/:id')
+  async getRewardClaimById(@Param('id') id: string) {
+    return this.gatewayService.getRewardClaimById(id);
+  }
+
+  // 유저용
+  @UseGuards(JwtAuthGuard)
+  @Get('/my/reward-claims')
+  async getMyRewardClaim(@User() user: AuthUser) {
+    return this.gatewayService.getMyRewardClaim(user);
   }
 }
