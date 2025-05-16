@@ -3,7 +3,7 @@ import { HydratedDocument } from 'mongoose';
 
 export type EventDocument = HydratedDocument<Event>;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Event {
   @Prop({ required: true })
   title: string;
@@ -40,10 +40,7 @@ export class Event {
   @Prop() // user._id
   createdBy: string;
 
-  @Prop({ default: () => new Date() })
   createdAt: Date;
-
-  @Prop({ default: () => new Date() })
   updatedAt: Date;
 }
 

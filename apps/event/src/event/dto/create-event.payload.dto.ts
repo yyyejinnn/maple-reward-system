@@ -1,5 +1,16 @@
-import { CreateEventReqDto } from 'apps/gateway/src/dto/post.create.event.req.dto';
+export class CreateEventPayloadDto {
+  title: string;
+  description?: string;
 
-export class CreateEventPayloadDto extends CreateEventReqDto {
+  condition: {
+    type: string;
+    criteria: Record<string, any>;
+  };
+
+  period: {
+    start: Date;
+    end: Date;
+  };
+
   createdBy: string;
 }

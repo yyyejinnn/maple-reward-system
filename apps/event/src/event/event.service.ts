@@ -20,8 +20,6 @@ export class EventService {
       period, // isActive 유효성 체크 필요
       createdBy,
       isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     return await event.save();
