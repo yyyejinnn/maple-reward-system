@@ -2,16 +2,16 @@ import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common'
 import { AuthService } from './auth.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { AuthPatterns } from 'libs/constants/patterns/auth.patterns';
-import { ValidateUserPayloadDTO } from './dto/validate-user.payload.dto';
+import { ValidateUserPayloadDto } from './dto/validate-user.payload.dto';
 import { CreateAccessTokenPayloadDto } from './dto/create-access-token.payload.dto';
-import { RegisterPayloadDTO } from './dto/register.payload.dto';
+import { RegisterPayloadDto } from './dto/register.payload.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @MessagePattern({ cmd: AuthPatterns.Register })
-  async register(@Payload() dto: RegisterPayloadDTO) {
+  async register(@Payload() dto: RegisterPayloadDto) {
     return await this.authService.register(dto);
   }
 
@@ -21,7 +21,7 @@ export class AuthController {
   }
 
   @MessagePattern({ cmd: AuthPatterns.ValidateUser })
-  async validateUser(@Payload() dto: ValidateUserPayloadDTO) {
+  async validateUser(@Payload() dto: ValidateUserPayloadDto) {
     return this.authService.validateUser(dto);
   }
 
