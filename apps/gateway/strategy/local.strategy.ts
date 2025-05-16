@@ -1,11 +1,10 @@
 import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
-import { AuthService } from 'apps/auth/src/auth/auth.service';
 import { ClientProxy } from '@nestjs/microservices';
 import { AUTH_SERVICE } from 'libs/constants/tokens/service.tokens';
 import { AuthPatterns } from 'libs/constants/patterns/auth.patterns';
-import { firstValueFrom } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
@@ -14,7 +13,8 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(email: string, password: string): Promise<any> {
-    const user = await firstValueFrom(
+    // 옵저버 처리 필요 (컨트롤러는 자동 변환)
+    const user = await lastValueFrom(
       this.authClient.send({ cmd: AuthPatterns.ValidateUser }, { email, password }),
     );
 
