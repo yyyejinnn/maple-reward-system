@@ -2,12 +2,14 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy, EventPattern } from '@nestjs/microservices';
 import { AuthPatterns } from 'libs/constants/patterns/auth.patterns';
 import { AUTH_SERVICE, EVENT_SERVICE } from 'libs/constants/tokens/service.tokens';
-import { CreateEventReqDto } from './dto/post.create.event.req.dto';
-import { User } from '../decorators/user.decorator';
+import { CreateEventReqDto } from './dto/post.create-event.req.dto';
 import { AuthUser } from '../interfaces/auth-user.interface';
 import { EventPatterns } from 'libs/constants/patterns/event.patterns';
 import { RegisterReqDTO } from './dto/post.register.req.dto';
-import { CreateEventPayloadDto } from 'apps/event/src/event/dto/create.event.payload.dto';
+import { RewardPatterns } from 'libs/constants/patterns/reward.patterns';
+import { CreateRewardReqDto } from './dto/post.create-reward.req.dto';
+import { CreateEventPayloadDto } from 'apps/event/src/event/dto/create-event.payload.dto';
+import { CreateRewardPayloadDto } from 'apps/event/src/reward/dto/create-reward.payload.dto';
 
 @Injectable()
 export class GatewayService {
@@ -32,7 +34,7 @@ export class GatewayService {
   }
 
   // event
-  async createEvent(dto: CreateEventReqDto, @User() user: AuthUser) {
+  async createEvent(dto: CreateEventReqDto, user: AuthUser) {
     const { id } = user;
 
     const payload: CreateEventPayloadDto = { ...dto, createdBy: id };
@@ -47,8 +49,29 @@ export class GatewayService {
   }
 
   async getEventById(id: string) {
-    const payload = { id };
+    const payload = { id }; // 24자 체크 필요
     const result = this.eventClient.send({ cmd: EventPatterns.GetEventById }, payload);
+
+    return result;
+  }
+
+  // reward
+  async createReward(dto: CreateRewardReqDto, user: AuthUser) {
+    const { id } = user;
+    const payload: CreateRewardPayloadDto = { ...dto, createdBy: id };
+
+    return this.eventClient.send({ cmd: RewardPatterns.CreateReward }, payload);
+  }
+
+  async listRewards() {
+    const result = this.eventClient.send({ cmd: RewardPatterns.ListRewards }, {});
+
+    return result;
+  }
+
+  async getRewardById(id: string) {
+    const payload = { id }; // 24자 체크 필요
+    const result = this.eventClient.send({ cmd: RewardPatterns.GetRewardById }, payload);
 
     return result;
   }
