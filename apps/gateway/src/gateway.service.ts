@@ -1,8 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { ClientProxy, EventPattern } from '@nestjs/microservices';
 import { RegisterReqDTO } from 'apps/auth/src/auth/dto/post.register.req.dto';
 import { AuthPatterns } from 'libs/constants/patterns/auth.patterns';
 import { AUTH_SERVICE, EVENT_SERVICE } from 'libs/constants/tokens/service.tokens';
+import { CreateEventReqDto } from './dto/post.create.event.req.dto';
+import { User } from '../decorators/user.decorator';
+import { AuthUser } from '../interfaces/auth-user.interface';
+import { EventPatterns } from 'libs/constants/patterns/event.patterns';
+import { CreateEventPayloadDto } from 'apps/event/src/event/dto/create.event.payload.dto';
 
 @Injectable()
 export class GatewayService {
@@ -28,4 +33,11 @@ export class GatewayService {
   }
 
   // event
+  async createEvent(dto: CreateEventReqDto, @User() user: AuthUser) {
+    const { id } = user;
+
+    const payload: CreateEventPayloadDto = { ...dto, createdBy: id };
+
+    return this.eventClient.send({ cmd: EventPatterns.CreateEvent }, payload);
+  }
 }
