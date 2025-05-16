@@ -3,7 +3,7 @@ import { EventService } from './event.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { EventPatterns } from 'libs/constants/patterns/event.patterns';
 import { GetEventByIdPayloadDto } from './dto/get-event.payload.dto';
-import { CreateEventPayloadDto } from './dto/create.event.payload.dto';
+import { CreateEventPayloadDto } from './dto/create-event.payload.dto';
 
 @Controller()
 export class EventController {

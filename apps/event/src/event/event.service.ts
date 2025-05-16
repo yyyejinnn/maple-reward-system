@@ -3,8 +3,8 @@ import { Event, EventDocument } from 'apps/event/schemas/event.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { GetEventByIdPayloadDto } from './dto/get-event.payload.dto';
-import { CreateEventPayloadDto } from './dto/create.event.payload.dto';
 import { EventResponseDto } from './dto/event-response.dto';
+import { CreateEventPayloadDto } from './dto/create-event.payload.dto';
 
 @Injectable()
 export class EventService {
