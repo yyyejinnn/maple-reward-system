@@ -25,13 +25,13 @@ export class Event {
   @Prop({ default: true })
   isActive: boolean;
 
-  @Prop({
-    type: {
-      start: { type: Date },
-      end: { type: Date },
-    },
-    required: true,
-  })
+  @Prop(
+    raw({
+      start: { type: Date, required: true },
+      end: { type: Date, required: true },
+      _id: false,
+    }),
+  )
   period: {
     start: Date;
     end: Date;

@@ -6,8 +6,8 @@ import { CreateEventReqDto } from './dto/post.create.event.req.dto';
 import { User } from '../decorators/user.decorator';
 import { AuthUser } from '../interfaces/auth-user.interface';
 import { EventPatterns } from 'libs/constants/patterns/event.patterns';
-import { CreateEventPayloadDto } from 'apps/event/src/event/dto/create.event.payload.dto';
 import { RegisterReqDTO } from './dto/post.register.req.dto';
+import { CreateEventPayloadDto } from 'apps/event/src/event/dto/create.event.payload.dto';
 
 @Injectable()
 export class GatewayService {
@@ -38,5 +38,18 @@ export class GatewayService {
     const payload: CreateEventPayloadDto = { ...dto, createdBy: id };
 
     return this.eventClient.send({ cmd: EventPatterns.CreateEvent }, payload);
+  }
+
+  async listEvents() {
+    const result = this.eventClient.send({ cmd: EventPatterns.ListEvents }, {});
+
+    return result;
+  }
+
+  async getEventById(id: string) {
+    const payload = { id };
+    const result = this.eventClient.send({ cmd: EventPatterns.GetEventById }, payload);
+
+    return result;
   }
 }

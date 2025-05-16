@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { CreateEventPayloadDto } from './dto/create.event.payload.dto';
 import { Event, EventDocument } from 'apps/event/schemas/event.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { GetEventByIdPayloadDto } from './dto/get-event.payload.dto';
+import { CreateEventPayloadDto } from './dto/create.event.payload.dto';
+import { EventResponseDto } from './dto/event-response.dto';
 
 @Injectable()
 export class EventService {
@@ -23,5 +25,32 @@ export class EventService {
     });
 
     return await event.save();
+  }
+
+  async listEvents() {
+    const eventDocs = await this.eventModel.find().sort({ createdAt: -1 }).lean();
+
+    const result = eventDocs.map(doc => this.toEventResponse(doc));
+
+    return result;
+  }
+
+  async getEventById(dto: GetEventByIdPayloadDto) {
+    const { id } = dto;
+    const doc = await this.eventModel.findById(id).lean();
+    return doc ? this.toEventResponse(doc) : null;
+  }
+
+  private toEventResponse(doc: EventDocument): EventResponseDto {
+    return {
+      id: doc._id.toString(),
+      title: doc.title,
+      description: doc.description,
+      condition: doc.condition,
+      period: doc.period,
+      isActive: doc.isActive,
+      createdBy: doc.createdBy,
+      createdAt: doc.createdAt,
+    };
   }
 }

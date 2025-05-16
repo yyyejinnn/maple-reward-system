@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Request, UseGuards } from '@nestjs/common';
 import { GatewayService } from './gateway.service';
 import { LocalAuthGuard } from 'apps/gateway/guard/local.guard';
 import { JwtAuthGuard } from '../guard/jwt.guard';
@@ -40,5 +40,17 @@ export class GatewayController {
   async createEvent(@Body() dto: CreateEventReqDto, @User() user: AuthUser) {
     console.log(user);
     return await this.gatewayService.createEvent(dto, user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/events')
+  async listEvents() {
+    return await this.gatewayService.listEvents();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/events/:id')
+  async getEventById(@Param('id') id: string) {
+    return this.gatewayService.getEventById(id);
   }
 }
