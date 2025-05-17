@@ -23,12 +23,14 @@ export class RewardClaim {
   @Prop({
     required: true,
     enum: RewardClaimStatus,
+    type: String,
   })
   claimStatus: RewardClaimStatus;
 
   @Prop({
     required: true,
     enum: RewardClaimProgress,
+    type: String,
     default: RewardClaimProgress.PENDING,
   })
   progress: RewardClaimProgress;

@@ -12,8 +12,6 @@ import { CreateEventReqDto } from './dto/post.create-event.req.dto';
 import { AuthUser } from '../interfaces/auth-user.interface';
 import { RegisterReqDTO } from './dto/post.register.req.dto';
 import { CreateRewardReqDto } from './dto/post.create-reward.req.dto';
-import { CreateEventPayloadDto } from 'apps/event/src/event/dto/create-event.payload.dto';
-import { CreateRewardPayloadDto } from 'apps/event/src/reward/dto/create-reward.payload.dto';
 import { CreateRewardClaimReqDto } from './dto/post.create-reward-claim.req.dto';
 
 @Injectable()
@@ -42,7 +40,8 @@ export class GatewayService {
   async createEvent(dto: CreateEventReqDto, user: AuthUser) {
     const { id } = user;
 
-    const payload: CreateEventPayloadDto = { ...dto, createdBy: id };
+    // const payload: CreateEventPayloadDto = { ...dto, createdBy: id };
+    const payload = { ...dto, createdBy: id };
 
     return this.eventClient.send({ cmd: EventPatterns.CreateEvent }, payload);
   }
@@ -63,7 +62,9 @@ export class GatewayService {
   // reward
   async createReward(dto: CreateRewardReqDto, user: AuthUser) {
     const { id } = user;
-    const payload: CreateRewardPayloadDto = { ...dto, createdBy: id };
+
+    // const payload: CreateRewardPayloadDto = { ...dto, createdBy: id };
+    const payload = { ...dto, createdBy: id };
 
     return this.eventClient.send({ cmd: RewardPatterns.CreateReward }, payload);
   }
