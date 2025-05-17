@@ -1,15 +1,21 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateRewardClaimPayloadDto } from './dto/create-reward-claim.payload.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { RewardClaim, RewardClaimDocument } from 'apps/event/schemas/reward-claim.schema';
 import { Model } from 'mongoose';
 import { GetRewardByIdPayloadDto } from '../reward/dto/get-reward.payload.dto';
 import { ListRewardClaimsByUserIdPayloadDto } from './dto/list-reward-claims-by-user-id.payload.dto';
+import { Reward, RewardDocument } from 'apps/event/schemas/reward.schema';
+import { RewardClaimStatus } from '@app/common';
+import { EventConditionStrategyFactory } from '@app/common/strategies/event-condition/event-condition-strategy.factory';
 
 @Injectable()
 export class RewardClaimService {
   constructor(
     @InjectModel(RewardClaim.name) private rewardClaimModel: Model<RewardClaimDocument>,
+    @InjectModel(Reward.name) private rewardModel: Model<RewardDocument>,
+
+    private conditionFactory: EventConditionStrategyFactory,
   ) {}
 
   async createRewardClaim(dto: CreateRewardClaimPayloadDto) {
@@ -23,6 +29,11 @@ export class RewardClaimService {
     }
 
     // 2. 조건 충족 여부 검증 (strategy)
+    const isValid = await this.validateClaimCondition(userId, rewardId);
+
+    const claimStatus: RewardClaimStatus = isValid
+      ? RewardClaimStatus.SUCCESS
+      : RewardClaimStatus.FAILED;
 
     // 3. 기록
     // err.code === 11000 ??
@@ -31,10 +42,24 @@ export class RewardClaimService {
       userId,
       userEmail,
       userNickname,
-      claimStatus: 'SUCCESS', // 성공 or 실패
+      claimStatus,
     });
 
     return await claim.save();
+  }
+
+  private async validateClaimCondition(userId: string, rewardId: string): Promise<boolean> {
+    const reward = await this.rewardModel
+      .findById(rewardId)
+      .select('_id')
+      .populate({ path: 'eventId', select: 'condition' })
+      .lean();
+
+    const { type, criteria } = reward.eventId?.['condition'];
+
+    const strategy = this.conditionFactory.getStrategy(type);
+
+    return await strategy.validate(userId, criteria);
   }
 
   async listRewardClaims() {

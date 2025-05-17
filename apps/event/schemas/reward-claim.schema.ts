@@ -1,8 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 import { Reward } from './reward.schema';
-import { RewardClaimStatus } from '@app/common/enums/reward-claim-status.enum';
-import { RewardClaimProgress } from '@app/common/enums/reward-claim-progress.enum';
+import { RewardClaimProgress, RewardClaimStatus } from '@app/common';
 
 export type RewardClaimDocument = HydratedDocument<RewardClaim>;
 
