@@ -12,3 +12,8 @@ export * from './tokens/service.tokens';
 
 // config
 export * from './config/jwt.keys';
+
+// enum
+export * from './enums/event-type.enum';
+export * from './enums/reward-claim-progress.enum';
+export * from './enums/reward-claim-status.enum';
