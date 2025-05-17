@@ -78,8 +78,8 @@ export class GatewayController {
   // event - claims
   @UseGuards(JwtAuthGuard)
   @Post('/reward-claims')
-  async createRewardCliam(@Body() dto: CreateRewardClaimReqDto, @User() user: AuthUser) {
-    return await this.gatewayService.createRewardCliam(dto, user);
+  async createRewardClaim(@Body() dto: CreateRewardClaimReqDto, @User() user: AuthUser) {
+    return await this.gatewayService.createRewardClaim(dto, user);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -97,7 +97,13 @@ export class GatewayController {
   // 유저용
   @UseGuards(JwtAuthGuard)
   @Get('/my/reward-claims')
-  async getMyRewardClaim(@User() user: AuthUser) {
-    return this.gatewayService.getMyRewardClaim(user);
+  async listMyRewardClaims(@User() user: AuthUser) {
+    return this.gatewayService.listMyRewardClaims(user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/my/reward-claims/:id')
+  async getMyRewardClaimById(@Param('id') id: string, @User() user: AuthUser) {
+    return this.gatewayService.getMyRewardClaimById(id);
   }
 }

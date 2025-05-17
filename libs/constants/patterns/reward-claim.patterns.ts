@@ -1,6 +1,6 @@
 export enum RewardClaimPatterns {
-  CreateRewardCliam = 'reward-claim.create-reward-claim',
-  ListRewardCliams = 'reward-claim.list-reward-claims',
-  GetRewardCliamById = 'reward-claim.get-reward-claim-by-id',
-  GetRewardCliamByUserId = 'reward-claim.get-reward-claim-by-id',
+  CreateRewardClaim = 'reward-claim.create-reward-claim',
+  ListRewardClaims = 'reward-claim.list-reward-claims',
+  ListRewardClaimsByUserId = 'reward-claim.list-reward-claims-by-user-id',
+  GetRewardClaimById = 'reward-claim.get-reward-claim-by-id',
 }

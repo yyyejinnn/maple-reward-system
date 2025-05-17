@@ -79,37 +79,46 @@ export class GatewayService {
   }
 
   // claim
-  async createRewardCliam(dto: CreateRewardClaimReqDto, user: AuthUser) {
-    const { id } = user;
+  async createRewardClaim(dto: CreateRewardClaimReqDto, user: AuthUser) {
+    const { id: userId, email: userEmail, nickname: userNickname } = user;
     const { rewardId } = dto;
 
-    const payload = { userId: id, rewardId };
-    const result = this.eventClient.send({ cmd: RewardClaimPatterns.CreateRewardCliam }, payload);
+    const payload = { rewardId, userId, userEmail, userNickname };
+    const result = this.eventClient.send({ cmd: RewardClaimPatterns.CreateRewardClaim }, payload);
 
     return result;
   }
 
   async listRewardClaims() {
-    const result = this.eventClient.send({ cmd: RewardClaimPatterns.ListRewardCliams }, {});
+    const result = this.eventClient.send({ cmd: RewardClaimPatterns.ListRewardClaims }, {});
 
     return result;
   }
 
   async getRewardClaimById(id: string) {
-    const payload = { id };
-    const result = this.eventClient.send({ cmd: RewardClaimPatterns.GetRewardCliamById }, payload);
-
-    return result;
+    return this.sendEventRewardClaimMessage(id);
   }
 
-  async getMyRewardClaim(user: AuthUser) {
+  async listMyRewardClaims(user: AuthUser) {
     const { id } = user;
     const payload = { userId: id };
 
     const result = this.eventClient.send(
-      { cmd: RewardClaimPatterns.GetRewardCliamByUserId },
+      { cmd: RewardClaimPatterns.ListRewardClaimsByUserId },
       payload,
     );
+
+    return result;
+  }
+
+  async getMyRewardClaimById(id: string) {
+    return this.sendEventRewardClaimMessage(id);
+  }
+
+  private sendEventRewardClaimMessage(claimId: string) {
+    // 리소스 '소유권' 확인 필요??
+    const payload = { id: claimId };
+    const result = this.eventClient.send({ cmd: RewardClaimPatterns.GetRewardClaimById }, payload);
 
     return result;
   }
