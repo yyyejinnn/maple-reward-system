@@ -5,10 +5,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from 'apps/auth/schemas/user.schema';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { LocalStrategy } from 'apps/gateway/strategy/local.strategy';
-import { JwtStrategy } from 'apps/gateway/strategy/jwt.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { JWT_SECRET_KEY } from 'libs/constants/tokens/jwt.tokens';
+import { JWT_SECRET_KEY } from '@app/common';
 
 @Module({
   imports: [
@@ -19,7 +17,7 @@ import { JWT_SECRET_KEY } from 'libs/constants/tokens/jwt.tokens';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         secretOrPrivateKey: configService.get(JWT_SECRET_KEY),
-        signOptions: { expiresIn: '60s' },
+        signOptions: { expiresIn: '60000000s' },
       }),
       inject: [ConfigService],
     }),

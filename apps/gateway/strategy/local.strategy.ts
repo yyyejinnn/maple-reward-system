@@ -2,8 +2,8 @@ import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { AUTH_SERVICE } from 'libs/constants/tokens/service.tokens';
-import { AuthPatterns } from 'libs/constants/patterns/auth.patterns';
+import { AUTH_SERVICE, AuthPatterns } from '@app/common';
+
 import { lastValueFrom } from 'rxjs';
 
 @Injectable()

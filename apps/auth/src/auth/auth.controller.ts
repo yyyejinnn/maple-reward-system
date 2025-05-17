@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { AuthPatterns } from 'libs/constants/patterns/auth.patterns';
+import { AuthPatterns } from '@app/common';
 import { ValidateUserPayloadDto } from './dto/validate-user.payload.dto';
 import { CreateAccessTokenPayloadDto } from './dto/create-access-token.payload.dto';
 import { RegisterPayloadDto } from './dto/register.payload.dto';

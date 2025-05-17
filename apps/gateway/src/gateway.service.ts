@@ -1,17 +1,20 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy, EventPattern } from '@nestjs/microservices';
-import { AuthPatterns } from 'libs/constants/patterns/auth.patterns';
-import { AUTH_SERVICE, EVENT_SERVICE } from 'libs/constants/tokens/service.tokens';
+import {
+  AUTH_SERVICE,
+  EVENT_SERVICE,
+  AuthPatterns,
+  EventPatterns,
+  RewardPatterns,
+  RewardClaimPatterns,
+} from '@app/common';
 import { CreateEventReqDto } from './dto/post.create-event.req.dto';
 import { AuthUser } from '../interfaces/auth-user.interface';
-import { EventPatterns } from 'libs/constants/patterns/event.patterns';
 import { RegisterReqDTO } from './dto/post.register.req.dto';
-import { RewardPatterns } from 'libs/constants/patterns/reward.patterns';
 import { CreateRewardReqDto } from './dto/post.create-reward.req.dto';
 import { CreateEventPayloadDto } from 'apps/event/src/event/dto/create-event.payload.dto';
 import { CreateRewardPayloadDto } from 'apps/event/src/reward/dto/create-reward.payload.dto';
 import { CreateRewardClaimReqDto } from './dto/post.create-reward-claim.req.dto';
-import { RewardClaimPatterns } from 'libs/constants/patterns/reward-claim.patterns';
 
 @Injectable()
 export class GatewayService {

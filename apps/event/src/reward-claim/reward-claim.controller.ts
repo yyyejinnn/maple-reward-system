@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { RewardClaimService } from './reward-claim.service';
-import { RewardClaimPatterns } from 'libs/constants/patterns/reward-claim.patterns';
+import { RewardClaimPatterns } from '@app/common';
 import { GetRewardByIdPayloadDto } from '../reward/dto/get-reward.payload.dto';
 import { ListRewardClaimsByUserIdPayloadDto } from './dto/list-reward-claims-by-user-id.payload.dto';
 

@@ -3,7 +3,7 @@ import { GatewayController } from './gateway.controller';
 import { GatewayService } from './gateway.service';
 import { ConfigModule } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { AUTH_SERVICE, EVENT_SERVICE } from 'libs/constants/tokens/service.tokens';
+import { AUTH_SERVICE, EVENT_SERVICE } from '@app/common';
 import { LocalStrategy } from '../strategy/local.strategy';
 import { JwtStrategy } from '../strategy/jwt.strategy';
 

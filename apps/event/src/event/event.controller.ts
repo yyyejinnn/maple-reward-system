@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { EventService } from './event.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { EventPatterns } from 'libs/constants/patterns/event.patterns';
+import { EventPatterns } from '@app/common';
 import { GetEventByIdPayloadDto } from './dto/get-event.payload.dto';
 import { CreateEventPayloadDto } from './dto/create-event.payload.dto';
 
