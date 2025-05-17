@@ -1,6 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 import { Reward } from './reward.schema';
+import { RewardClaimStatus } from '@app/common/enums/reward-claim-status.enum';
+import { RewardClaimProgress } from '@app/common/enums/reward-claim-progress.enum';
 
 export type RewardClaimDocument = HydratedDocument<RewardClaim>;
 
@@ -20,16 +22,16 @@ export class RewardClaim {
 
   @Prop({
     required: true,
-    // enum: ['SUCCESS', 'FAILED', 'EXPIRED'],
+    enum: RewardClaimStatus,
   })
-  claimStatus: string; // 'SUCCESS', 'FAILED', 'EXPIRED'
+  claimStatus: RewardClaimStatus;
 
   @Prop({
     required: true,
-    // enum: ['PENDING' 'APPROVED', 'REJECTED'],
-    default: 'PENDING',
+    enum: RewardClaimProgress,
+    default: RewardClaimProgress.PENDING,
   })
-  progress: string; // 'PENDING' 'APPROVED', 'REJECTED'
+  progress: RewardClaimProgress;
 
   @Prop()
   confirmedBy?: string; // 수동 확인 시
