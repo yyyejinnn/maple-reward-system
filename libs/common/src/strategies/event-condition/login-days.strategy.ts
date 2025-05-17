@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { LoginDaysCriteria } from 'apps/event/interfaces/event.condition-criteria.interface';
+import { EventType, LoginDaysCriteria } from '@app/common';
 import { EventConditionStrategy } from './event-condition-strategy.interface';
 
 @Injectable()
-export class LoginDaysStrategy implements EventConditionStrategy<LoginDaysCriteria> {
+export class LoginDaysStrategy implements EventConditionStrategy<EventType.LOGIN_DAYS> {
   async validate(userId: string, criteria: LoginDaysCriteria) {
     // 유저 로그인 일수 >= criteria.days
     const days = 10;

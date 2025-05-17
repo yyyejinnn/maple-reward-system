@@ -1,5 +1,6 @@
-import { EventConditionCriteriaType } from 'apps/event/interfaces/event.condition-criteria.interface';
+import { EventType } from '@app/common';
+import { EventConditionCriteriaMap } from '@app/common/interfaces/event-criteria-map.interface';
 
-export interface EventConditionStrategy<T extends EventConditionCriteriaType> {
-  validate(userId: string, criteria: T): Promise<boolean>;
+export interface EventConditionStrategy<T extends EventType> {
+  validate(userId: string, criteria: EventConditionCriteriaMap[T]): Promise<boolean>;
 }
