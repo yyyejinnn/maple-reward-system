@@ -13,6 +13,9 @@ export class EventService {
   async createEvent(dto: CreateEventPayloadDto) {
     const { title, description, condition, period, createdBy } = dto;
 
+    // reward optional로 같이 생성할 수 있도록 (트랜젝션 고려)
+    // period 기간 유효성 검증 필요
+
     const event = new this.eventModel({
       title,
       description,

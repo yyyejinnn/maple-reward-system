@@ -19,12 +19,12 @@ export class AuthService {
   }
 
   async register(dto: RegisterPayloadDto) {
-    const { email, password } = dto;
+    const { email, nickname, password } = dto;
 
     // 유효성 체크
     const role = 'USER'; // 임시
 
-    const user = new this.userModel({ email, password, role });
+    const user = new this.userModel({ email, nickname, password, role });
     await user.save();
 
     return { msg: '회원가입 성공' };
