@@ -8,13 +8,7 @@ import { InviteCountStrategy } from '../../../../libs/common/src/strategies/even
 import { LoginDaysStrategy } from '../../../../libs/common/src/strategies/event-condition/login-days.strategy';
 import { LevelReachedStrategy } from '../../../../libs/common/src/strategies/event-condition/level-reached.strategy';
 import { EventConditionStrategyFactory } from '../../../../libs/common/src/strategies/event-condition/event-condition-strategy.factory';
-
-const strategies = [
-  EventConditionStrategyFactory,
-  LoginDaysStrategy,
-  InviteCountStrategy,
-  LevelReachedStrategy,
-];
+import { EventConditionStrategyModule } from '@app/common/strategies/event-condition.strategy.module';
 
 @Module({
   imports: [
@@ -22,8 +16,9 @@ const strategies = [
       { name: RewardClaim.name, schema: RewardClaimSchema },
       { name: Reward.name, schema: RewardSchema },
     ]),
+    EventConditionStrategyModule,
   ],
   controllers: [RewardClaimController],
-  providers: [RewardClaimService, ...strategies],
+  providers: [RewardClaimService],
 })
 export class RewardClaimModule {}

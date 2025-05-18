@@ -8,7 +8,7 @@ import {
 } from '@app/common';
 import { BadRequestException, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { catchError, throwError } from 'rxjs';
+import { catchError, lastValueFrom, throwError } from 'rxjs';
 
 @Injectable()
 export class RpcClientService {
@@ -17,19 +17,22 @@ export class RpcClientService {
     @Inject(EVENT_SERVICE) private readonly eventClient: ClientProxy,
   ) {}
 
-  send(
+  async send(
     pattern: AuthPatterns | EventPatterns | RewardPatterns | RewardClaimPatterns,
     payload: any,
     server: 'auth' | 'event',
   ) {
     const client = this.getClient(server);
 
-    return client.send({ cmd: pattern }, payload).pipe(
-      catchError(err => {
-        return throwError(
-          () => new HttpException(err.message, err?.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR),
-        );
-      }),
+    return await lastValueFrom(
+      client.send({ cmd: pattern }, payload).pipe(
+        catchError(err => {
+          return throwError(
+            () =>
+              new HttpException(err.message, err?.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR),
+          );
+        }),
+      ),
     );
   }
 
