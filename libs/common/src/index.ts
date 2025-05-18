@@ -14,7 +14,9 @@ export * from './tokens/service.tokens';
 export * from './config/jwt.keys';
 
 // enum
+export * from './enums/user-role.enum';
 export * from './enums/event-type.enum';
+export * from './enums/reward-type.enum';
 export * from './enums/reward-claim-progress.enum';
 
 // interfaces

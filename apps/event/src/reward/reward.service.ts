@@ -5,30 +5,57 @@ import { Reward, RewardDocument } from 'apps/event/src/schemas/reward.schema';
 import { Model, Types } from 'mongoose';
 import { GetRewardByIdPayloadDto } from './dto/get-reward.payload.dto';
 import { RewardResponseDto } from './dto/reward-response.dto';
+import { RewardType } from '@app/common';
+import { EventDocument } from '../schemas/event.schema';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class RewardService {
-  constructor(@InjectModel(Reward.name) private rewardModel: Model<RewardDocument>) {}
+  constructor(
+    @InjectModel(Reward.name) private rewardModel: Model<RewardDocument>,
+    @InjectModel(Event.name) private eventModel: Model<EventDocument>,
+  ) {}
 
   async createReward(dto: CreateRewardPayloadDto) {
     const { eventId, type, name, amount, meta, createdBy } = dto;
 
-    // 이벤트 유효성 체크
-    // 존재하는지?
-    // 활성화 돼 있는지?
-    // 기간?
+    await this.validateEventOfReward(eventId);
+    await this.saveReward({ eventId, type, name, amount, createdBy, meta });
+  }
+
+  private async validateEventOfReward(eventId: string) {
+    const event = await this.eventModel.findById({ eventId }).lean();
+
+    if (!event) {
+      throw new RpcException('존재하지 않는 이벤트 입니다.');
+    }
+
+    if (!event.isActive) {
+      throw new RpcException('비활성화 된 이벤트 입니다.');
+    }
+
+    const now = new Date();
+    if (event.period?.start > now || event.period?.end < now) {
+      throw new RpcException('이벤트 기간이 아닙니다.');
+    }
+  }
+
+  private async saveReward(fields: {
+    eventId: string;
+    type: RewardType;
+    name: string;
+    amount: number;
+    createdBy: string;
+    meta?: object;
+  }) {
+    const { eventId } = fields;
 
     const reward = new this.rewardModel({
+      ...fields,
       eventId: new Types.ObjectId(eventId),
-      type,
-      name,
-      amount,
-      createdBy,
     });
 
-    if (meta) reward.meta = meta;
-
-    return await reward.save();
+    await reward.save();
   }
 
   async listRewards() {

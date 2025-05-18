@@ -8,7 +8,7 @@ import {
 } from '@app/common';
 import { BadRequestException, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { catchError, lastValueFrom, throwError } from 'rxjs';
+import { catchError, defaultIfEmpty, lastValueFrom, throwError } from 'rxjs';
 
 @Injectable()
 export class RpcClientService {
@@ -26,6 +26,9 @@ export class RpcClientService {
 
     return await lastValueFrom(
       client.send({ cmd: pattern }, payload).pipe(
+        defaultIfEmpty({
+          message: '요청 성공',
+        }),
         catchError(err => {
           return throwError(
             () =>

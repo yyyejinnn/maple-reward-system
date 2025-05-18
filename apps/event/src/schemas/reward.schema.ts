@@ -1,3 +1,4 @@
+import { RewardType } from '@app/common';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 
@@ -8,8 +9,8 @@ export class Reward {
   @Prop({ type: Types.ObjectId, required: true, ref: Event.name })
   eventId: Types.ObjectId;
 
-  @Prop({ required: true })
-  type: string; // POINT, ITEM, COUPON
+  @Prop({ required: true, enum: RewardType, type: String })
+  type: RewardType;
 
   @Prop({ required: true })
   name: string;
