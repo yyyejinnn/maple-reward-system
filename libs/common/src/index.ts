@@ -22,3 +22,5 @@ export * from './enums/reward-claim-status.enum';
 export * from './interfaces/event-condition/invite-count-criteria.interface';
 export * from './interfaces/event-condition/level-reached-criteria.interface';
 export * from './interfaces/event-condition/login-days-criteria.interface';
+export * from './interfaces/auth-user.interface';
+export * from './interfaces/event-criteria-map.type';

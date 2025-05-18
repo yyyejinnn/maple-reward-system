@@ -1,13 +1,14 @@
 import { Body, Controller, Get, Param, Post, Request, UseGuards } from '@nestjs/common';
 import { GatewayService } from './gateway.service';
-import { LocalAuthGuard } from 'apps/gateway/guard/local.guard';
-import { JwtAuthGuard } from '../guard/jwt.guard';
+
 import { CreateEventReqDto } from './dto/post.create-event.req.dto';
-import { User } from '../decorators/user.decorator';
-import { AuthUser } from '../interfaces/auth-user.interface';
 import { RegisterReqDTO } from './dto/post.register.req.dto';
 import { CreateRewardReqDto } from './dto/post.create-reward.req.dto';
 import { CreateRewardClaimReqDto } from './dto/post.create-reward-claim.req.dto';
+import { JwtAuthGuard } from './passport/jwt/jwt.guard';
+import { LocalAuthGuard } from './passport/local/local.guard';
+import { User } from './decorators/user.decorator';
+import { AuthUser } from '@app/common';
 
 @Controller()
 export class GatewayController {
