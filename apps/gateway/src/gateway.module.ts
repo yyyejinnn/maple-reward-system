@@ -4,12 +4,13 @@ import { GatewayService } from './gateway.service';
 import { ConfigModule } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AUTH_SERVICE, EVENT_SERVICE } from '@app/common';
-import { LocalStrategy } from '../strategy/local.strategy';
-import { JwtStrategy } from '../strategy/jwt.strategy';
-import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { HttpExceptionFilter } from '@app/common/exception-filters/http.exception-filter';
 import { RpcClientService } from './rpc-client.service';
 import { HttpResponseInterceptor } from '@app/common/interceptors/http.response.interceptor';
+import { LocalStrategy } from './passport/local/local.strategy';
+import { JwtStrategy } from './passport/jwt/jwt.strategy';
+import { RolesGuard } from './role/role.guard';
 
 @Module({
   imports: [
@@ -48,6 +49,10 @@ import { HttpResponseInterceptor } from '@app/common/interceptors/http.response.
     {
       provide: APP_INTERCEPTOR,
       useClass: HttpResponseInterceptor,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
 
     GatewayService,

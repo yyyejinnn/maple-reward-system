@@ -9,6 +9,8 @@ import { JwtAuthGuard } from './passport/jwt/jwt.guard';
 import { LocalAuthGuard } from './passport/local/local.guard';
 import { User } from './decorators/user.decorator';
 import { AuthUser } from '@app/common';
+import { Roles } from './role/role.decorator';
+import { UserRole } from '@app/common/enums/user-role.enum';
 
 @Controller()
 export class GatewayController {
@@ -39,6 +41,7 @@ export class GatewayController {
 
   // event - events
   @UseGuards(JwtAuthGuard)
+  @Roles(UserRole.OPERATOR, UserRole.ADMIN)
   @Post('/events')
   async createEvent(@Body() dto: CreateEventReqDto, @User() user: AuthUser) {
     // 후에 보상 등록 로직 필요
@@ -59,6 +62,7 @@ export class GatewayController {
 
   // event - rewards
   @UseGuards(JwtAuthGuard)
+  @Roles(UserRole.OPERATOR, UserRole.ADMIN)
   @Post('/rewards')
   async createReward(@Body() dto: CreateRewardReqDto, @User() user: AuthUser) {
     return await this.gatewayService.createReward(dto, user);
@@ -78,18 +82,21 @@ export class GatewayController {
 
   // event - claims
   @UseGuards(JwtAuthGuard)
+  @Roles(UserRole.USER)
   @Post('/reward-claims')
   async createRewardClaim(@Body() dto: CreateRewardClaimReqDto, @User() user: AuthUser) {
     return await this.gatewayService.createRewardClaim(dto, user);
   }
 
   @UseGuards(JwtAuthGuard)
+  @Roles(UserRole.OPERATOR, UserRole.ADMIN, UserRole.AUDITOR)
   @Get('/reward-claims')
   async listRewardClaims() {
     return this.gatewayService.listRewardClaims();
   }
 
   @UseGuards(JwtAuthGuard)
+  @Roles(UserRole.OPERATOR, UserRole.ADMIN, UserRole.AUDITOR)
   @Get('/reward-claims/:id')
   async getRewardClaimById(@Param('id') id: string) {
     return this.gatewayService.getRewardClaimById(id);
@@ -97,14 +104,17 @@ export class GatewayController {
 
   // 유저용
   @UseGuards(JwtAuthGuard)
-  @Get('/my/reward-claims')
+  @Roles(UserRole.USER)
   async listMyRewardClaims(@User() user: AuthUser) {
+    // 소유권 확인 필요
     return this.gatewayService.listMyRewardClaims(user);
   }
 
   @UseGuards(JwtAuthGuard)
+  @Roles(UserRole.USER)
   @Get('/my/reward-claims/:id')
   async getMyRewardClaimById(@Param('id') id: string, @User() user: AuthUser) {
+    // 소유권 확인 필요
     return this.gatewayService.getMyRewardClaimById(id);
   }
 }
