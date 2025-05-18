@@ -1,3 +1,5 @@
+import { EventPeriod } from '@app/common/interfaces/event-period.interface';
+
 export class RewardResponseDto {
   id: string;
   type: string;
@@ -7,10 +9,7 @@ export class RewardResponseDto {
     id: string;
     title: string;
     isActive: boolean;
-    period: {
-      start: Date;
-      end: Date;
-    };
+    period: EventPeriod;
   };
   createdBy: string;
   createdAt: Date;

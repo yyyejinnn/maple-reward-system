@@ -10,4 +10,16 @@ export class InviteCountStrategy implements EventConditionStrategy<EventType.INV
     const cnt = 10;
     return cnt >= criteria.count;
   }
+
+  validateStructure(criteria: object) {
+    if (criteria?.['count'] == null) {
+      return { valid: false, cause: '"count" 필드가 누락됐습니다.' };
+    }
+
+    if (typeof criteria?.['count'] !== 'number') {
+      return { valid: false, cause: '"count" 필드는 number여야 합니다.' };
+    }
+
+    return { valid: true };
+  }
 }

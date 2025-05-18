@@ -9,4 +9,14 @@ export class LoginDaysStrategy implements EventConditionStrategy<EventType.LOGIN
     const days = 10;
     return days >= criteria.days;
   }
+
+  validateStructure(criteria: object) {
+    if (criteria?.['days'] == null) {
+      return { valid: false, cause: '"days" 필드가 누락됐습니다.' };
+    }
+
+    if (typeof criteria?.['count'] !== 'number') {
+      return { valid: false, cause: '"days" 필드는 number여야 합니다.' };
+    }
+  }
 }

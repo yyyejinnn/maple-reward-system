@@ -5,25 +5,76 @@ import { Model } from 'mongoose';
 import { GetEventByIdPayloadDto } from './dto/get-event.payload.dto';
 import { EventResponseDto } from './dto/event-response.dto';
 import { CreateEventPayloadDto } from './dto/create-event.payload.dto';
+import { EventPeriod } from '@app/common/interfaces/event-period.interface';
+import { RpcException } from '@nestjs/microservices';
+import { EventConditionStrategyFactory } from '@app/common/strategies/event-condition/event-condition-strategy.factory';
+import { EventCondition, EventType } from '@app/common';
 
 @Injectable()
 export class EventService {
-  constructor(@InjectModel(Event.name) private eventModel: Model<EventDocument>) {}
+  constructor(
+    @InjectModel(Event.name) private eventModel: Model<EventDocument>,
+    private eventConditionFactory: EventConditionStrategyFactory,
+  ) {}
 
   async createEvent(dto: CreateEventPayloadDto) {
-    const { title, description, condition, period, createdBy } = dto;
+    const { title, description, condition, period, isActive, createdBy } = dto;
 
     // reward optional로 같이 생성할 수 있도록 (트랜젝션 고려)
-    // period 기간 유효성 검증 필요
 
-    const event = new this.eventModel({
+    this.validateEventConditionStruc(condition);
+    this.validateEventPeriod(period);
+
+    await this.saveEvent({
       title,
       description,
       condition,
-      period, // isActive 유효성 체크 필요
+      period,
+      isActive, // 향후 자동 비활성화 로직이 도입된다면 별도 처리
       createdBy,
-      isActive: true,
     });
+  }
+
+  private validateEventConditionStruc(condition: EventCondition) {
+    const { type, criteria } = condition;
+
+    if (!Object.values(EventType).includes(type)) {
+      throw new RpcException(`유효하지않은 type 입니다.(${type})`);
+    }
+
+    const strategy = this.eventConditionFactory.getStrategy(type);
+    const { valid, cause } = strategy.validateStructure(criteria);
+
+    if (!valid) {
+      throw new RpcException(cause ?? 'criteria를 다시 한번 확인해주세요.');
+    }
+  }
+
+  private validateEventPeriod(period: EventPeriod) {
+    const { start, end } = period;
+    const now = new Date();
+
+    if (period.start < now) {
+      throw new RpcException('이벤트 시작일은 현재 시각보다 미래여야 합니다.');
+    }
+
+    if (start > end) {
+      throw new RpcException('이벤트 시작일은 종료일보다 빨라야합니다.');
+    }
+  }
+
+  private async saveEvent(fields: {
+    title: string;
+    description?: string;
+    condition: {
+      type: string; // 수정 예정
+      criteria: Record<string, any>;
+    };
+    period: EventPeriod;
+    isActive: boolean;
+    createdBy: string;
+  }) {
+    const event = new this.eventModel(fields);
 
     return await event.save();
   }
