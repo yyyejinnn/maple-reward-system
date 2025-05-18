@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 import { Reward } from './reward.schema';
-import { RewardClaimProgress, RewardClaimStatus } from '@app/common';
+import { RewardClaimProgress } from '@app/common';
 
 export type RewardClaimDocument = HydratedDocument<RewardClaim>;
 
@@ -18,13 +18,6 @@ export class RewardClaim {
 
   @Prop({ required: true })
   userNickname: string;
-
-  @Prop({
-    required: true,
-    enum: RewardClaimStatus,
-    type: String,
-  })
-  claimStatus: RewardClaimStatus;
 
   @Prop({
     required: true,

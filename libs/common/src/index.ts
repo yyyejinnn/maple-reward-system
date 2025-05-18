@@ -16,7 +16,6 @@ export * from './config/jwt.keys';
 // enum
 export * from './enums/event-type.enum';
 export * from './enums/reward-claim-progress.enum';
-export * from './enums/reward-claim-status.enum';
 
 // interfaces
 export * from './interfaces/event-condition/invite-count-criteria.interface';
