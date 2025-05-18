@@ -1,3 +1,4 @@
+import { UserRole } from '@app/common/enums/user-role.enum';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
@@ -14,8 +15,8 @@ export class User {
   @Prop({ required: true })
   password: string;
 
-  @Prop({ type: String })
-  role: string;
+  @Prop({ required: true, enum: UserRole, type: String, default: UserRole.USER })
+  role: UserRole;
 
   @Prop({ default: () => new Date() })
   createdAt: Date;
