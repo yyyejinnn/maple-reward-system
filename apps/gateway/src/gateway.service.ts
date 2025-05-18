@@ -13,12 +13,14 @@ import { AuthUser } from '../interfaces/auth-user.interface';
 import { RegisterReqDTO } from './dto/post.register.req.dto';
 import { CreateRewardReqDto } from './dto/post.create-reward.req.dto';
 import { CreateRewardClaimReqDto } from './dto/post.create-reward-claim.req.dto';
+import { RpcClientService } from './rpc-client.service';
 
 @Injectable()
 export class GatewayService {
   constructor(
-    @Inject(AUTH_SERVICE) private authClient: ClientProxy,
-    @Inject(EVENT_SERVICE) private eventClient: ClientProxy,
+    // @Inject(AUTH_SERVICE) private authClient: ClientProxy,
+    // @Inject(EVENT_SERVICE) private eventClient: ClientProxy,
+    private rcpWrapper: RpcClientService,
   ) {}
 
   getHello(): string {
@@ -27,13 +29,16 @@ export class GatewayService {
 
   // auth
   async register(dto: RegisterReqDTO) {
-    return this.authClient.send({ cmd: AuthPatterns.Register }, dto);
+    return this.rcpWrapper.send(AuthPatterns.Register, dto, 'auth');
+
+    // return this.authClient.send({ cmd: AuthPatterns.Register }, dto);
   }
 
   async login(user: AuthUser) {
     const payload = user;
+    return this.rcpWrapper.send(AuthPatterns.CreateAccessToken, payload, 'auth');
 
-    return this.authClient.send({ cmd: AuthPatterns.CreateAccessToken }, payload);
+    // return this.authClient.send({ cmd: AuthPatterns.CreateAccessToken }, payload);
   }
 
   // event
@@ -42,21 +47,25 @@ export class GatewayService {
 
     // const payload: CreateEventPayloadDto = { ...dto, createdBy: id };
     const payload = { ...dto, createdBy: id };
+    return this.rcpWrapper.send(EventPatterns.CreateEvent, payload, 'event');
 
-    return this.eventClient.send({ cmd: EventPatterns.CreateEvent }, payload);
+    // return this.eventClient.send({ cmd: EventPatterns.CreateEvent }, payload);
   }
 
   async listEvents() {
-    const result = this.eventClient.send({ cmd: EventPatterns.ListEvents }, {});
+    return this.rcpWrapper.send(EventPatterns.ListEvents, {}, 'event');
 
-    return result;
+    // const result = this.eventClient.send({ cmd: EventPatterns.ListEvents }, {});
+    // return result;
   }
 
   async getEventById(id: string) {
     const payload = { id }; // 24자 체크 필요
-    const result = this.eventClient.send({ cmd: EventPatterns.GetEventById }, payload);
 
-    return result;
+    return this.rcpWrapper.send(EventPatterns.GetEventById, payload, 'event');
+
+    // const result = this.eventClient.send({ cmd: EventPatterns.GetEventById }, payload);
+    // return result;
   }
 
   // reward
@@ -66,20 +75,24 @@ export class GatewayService {
     // const payload: CreateRewardPayloadDto = { ...dto, createdBy: id };
     const payload = { ...dto, createdBy: id };
 
-    return this.eventClient.send({ cmd: RewardPatterns.CreateReward }, payload);
+    return this.rcpWrapper.send(RewardPatterns.CreateReward, payload, 'event');
+
+    // return this.eventClient.send({ cmd: RewardPatterns.CreateReward }, payload);
   }
 
   async listRewards() {
-    const result = this.eventClient.send({ cmd: RewardPatterns.ListRewards }, {});
+    return this.rcpWrapper.send(RewardPatterns.ListRewards, {}, 'event');
 
-    return result;
+    // const result = this.eventClient.send({ cmd: RewardPatterns.ListRewards }, {});
+    // return result;
   }
 
   async getRewardById(id: string) {
     const payload = { id }; // 24자 체크 필요
-    const result = this.eventClient.send({ cmd: RewardPatterns.GetRewardById }, payload);
+    return this.rcpWrapper.send(RewardPatterns.GetRewardById, payload, 'event');
 
-    return result;
+    // const result = this.eventClient.send({ cmd: RewardPatterns.GetRewardById }, payload);
+    // return result;
   }
 
   // claim
@@ -88,15 +101,17 @@ export class GatewayService {
     const { rewardId } = dto;
 
     const payload = { rewardId, userId, userEmail, userNickname };
-    const result = this.eventClient.send({ cmd: RewardClaimPatterns.CreateRewardClaim }, payload);
+    return this.rcpWrapper.send(RewardClaimPatterns.CreateRewardClaim, payload, 'event');
 
-    return result;
+    // const result = this.eventClient.send({ cmd: RewardClaimPatterns.CreateRewardClaim }, payload);
+    // return result;
   }
 
   async listRewardClaims() {
-    const result = this.eventClient.send({ cmd: RewardClaimPatterns.ListRewardClaims }, {});
+    return this.rcpWrapper.send(RewardClaimPatterns.ListRewardClaims, {}, 'event');
 
-    return result;
+    // const result = this.eventClient.send({ cmd: RewardClaimPatterns.ListRewardClaims }, {});
+    // return result;
   }
 
   async getRewardClaimById(id: string) {
@@ -107,12 +122,14 @@ export class GatewayService {
     const { id } = user;
     const payload = { userId: id };
 
-    const result = this.eventClient.send(
-      { cmd: RewardClaimPatterns.ListRewardClaimsByUserId },
-      payload,
-    );
+    return this.rcpWrapper.send(RewardClaimPatterns.ListRewardClaimsByUserId, payload, 'event');
 
-    return result;
+    // const result = this.eventClient.send(
+    //   { cmd: RewardClaimPatterns.ListRewardClaimsByUserId },
+    //   payload,
+    // );
+
+    // return result;
   }
 
   async getMyRewardClaimById(id: string) {
@@ -122,8 +139,9 @@ export class GatewayService {
   private sendEventRewardClaimMessage(claimId: string) {
     // 리소스 '소유권' 확인 필요??
     const payload = { id: claimId };
-    const result = this.eventClient.send({ cmd: RewardClaimPatterns.GetRewardClaimById }, payload);
+    return this.rcpWrapper.send(RewardClaimPatterns.GetRewardClaimById, payload, 'event');
 
-    return result;
+    // const result = this.eventClient.send({ cmd: RewardClaimPatterns.GetRewardClaimById }, payload);
+    // return result;
   }
 }
