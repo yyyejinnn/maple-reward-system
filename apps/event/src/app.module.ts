@@ -4,6 +4,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { EventModule } from './event/event.module';
 import { RewardModule } from './reward/reward.module';
 import { RewardClaimModule } from './reward-claim/reward-claim.module';
+import { APP_FILTER } from '@nestjs/core';
+import { TcpExceptionFilter } from '@app/common/exception-filters/tcp.exception-filter';
 
 @Module({
   imports: [
@@ -23,6 +25,13 @@ import { RewardClaimModule } from './reward-claim/reward-claim.module';
     EventModule,
     RewardModule,
     RewardClaimModule,
+  ],
+
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: TcpExceptionFilter,
+    },
   ],
 })
 export class EventAPPModule {}

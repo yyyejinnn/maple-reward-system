@@ -6,6 +6,10 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AUTH_SERVICE, EVENT_SERVICE } from '@app/common';
 import { LocalStrategy } from '../strategy/local.strategy';
 import { JwtStrategy } from '../strategy/jwt.strategy';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { HttpExceptionFilter } from '@app/common/exception-filters/http.exception-filter';
+import { RpcClientService } from './rpc-client.service';
+import { HttpResponseInterceptor } from '@app/common/interceptors/http.response.interceptor';
 
 @Module({
   imports: [
@@ -36,6 +40,20 @@ import { JwtStrategy } from '../strategy/jwt.strategy';
     ]),
   ],
   controllers: [GatewayController],
-  providers: [GatewayService, LocalStrategy, JwtStrategy],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: HttpResponseInterceptor,
+    },
+
+    GatewayService,
+    RpcClientService,
+    LocalStrategy,
+    JwtStrategy,
+  ],
 })
 export class GatewayModule {}

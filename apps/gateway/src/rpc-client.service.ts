@@ -6,7 +6,7 @@ import {
   RewardClaimPatterns,
   RewardPatterns,
 } from '@app/common';
-import { BadRequestException, HttpException, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { catchError, throwError } from 'rxjs';
 
@@ -26,7 +26,9 @@ export class RpcClientService {
 
     return client.send({ cmd: pattern }, payload).pipe(
       catchError(err => {
-        return throwError(() => new HttpException('err........', 400)); // 수정 예정
+        return throwError(
+          () => new HttpException(err.message, err?.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR),
+        );
       }),
     );
   }
