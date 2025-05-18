@@ -1,26 +1,28 @@
 import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { AUTH_SERVICE, AuthPatterns } from '@app/common';
-
-import { lastValueFrom } from 'rxjs';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { AuthPatterns } from '@app/common';
+import { RpcClientService } from '../../rpc-client/rpc-client.service';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
-  constructor(@Inject(AUTH_SERVICE) private authClient: ClientProxy) {
+  constructor(private rpcClientService: RpcClientService) {
     super({ usernameField: 'email' });
   }
 
   async validate(email: string, password: string): Promise<any> {
-    // 옵저버 처리 필요 (컨트롤러는 자동 변환)
-    const user = await lastValueFrom(
-      this.authClient.send({ cmd: AuthPatterns.ValidateUser }, { email, password }),
-    );
+    try {
+      const user = await this.rpcClientService.send(
+        AuthPatterns.ValidateUser,
+        { email, password },
+        'auth',
+      );
 
-    if (!user) {
-      throw new UnauthorizedException();
+      if (!user) throw new UnauthorizedException();
+
+      return user;
+    } catch (err) {
+      throw new UnauthorizedException(err);
     }
-    return user;
   }
 }

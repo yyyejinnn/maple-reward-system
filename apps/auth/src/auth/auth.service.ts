@@ -6,6 +6,7 @@ import { Model } from 'mongoose';
 import { ValidateUserPayloadDto } from './dto/validate-user.payload.dto';
 import { CreateAccessTokenPayloadDto } from './dto/create-access-token.payload.dto';
 import { RegisterPayloadDto } from './dto/register.payload.dto';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class AuthService {
@@ -22,25 +23,39 @@ export class AuthService {
     const { email, nickname, password, role } = dto;
 
     // 유효성 체크
-    // const role = 'USER'; // 임시
+    const existing = await this.userModel.findOne({
+      $or: [{ email }, { nickname }],
+    });
+
+    if (existing) {
+      if (existing.email === email) {
+        throw new RpcException('이미 존재하는 email 입니다.');
+      }
+      if (existing.nickname === nickname) {
+        throw new RpcException('이미 존재하는 nickname 입니다.');
+      }
+    }
 
     const user = new this.userModel({ email, nickname, password, role });
     await user.save();
-
-    return { msg: '회원가입 성공' };
   }
 
   async validateUser(dto: ValidateUserPayloadDto) {
     const { email, password: pwd } = dto;
 
-    const user = await this.userModel.findOne({ email, password: pwd });
+    // 유효성 체크
+    const user = await this.userModel.findOne({ email });
 
-    if (user && user.password === pwd) {
-      const { password, ...result } = user.toJSON();
-      return result;
+    if (!user) {
+      throw new RpcException('가입되지않은 email 입니다.');
     }
 
-    return null;
+    if (user.password !== pwd) {
+      throw new RpcException('비밀번호가 일치하지않습니다.');
+    }
+
+    const { password, ...result } = user.toJSON();
+    return result;
   }
 
   async createAccessToken(dto: CreateAccessTokenPayloadDto) {
