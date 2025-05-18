@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { CreateRewardClaimPayloadDto } from './dto/create-reward-claim.payload.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { RewardClaim, RewardClaimDocument } from 'apps/event/schemas/reward-claim.schema';
+import { RewardClaim, RewardClaimDocument } from 'apps/event/src/schemas/reward-claim.schema';
 import { Model } from 'mongoose';
 import { GetRewardByIdPayloadDto } from '../reward/dto/get-reward.payload.dto';
 import { ListRewardClaimsByUserIdPayloadDto } from './dto/list-reward-claims-by-user-id.payload.dto';
-import { Reward, RewardDocument } from 'apps/event/schemas/reward.schema';
+import { Reward, RewardDocument } from 'apps/event/src/schemas/reward.schema';
 import { RewardClaimStatus } from '@app/common';
 import { EventConditionStrategyFactory } from '@app/common/strategies/event-condition/event-condition-strategy.factory';
 

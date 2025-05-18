@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from 'apps/auth/schemas/user.schema';
+import { User, UserDocument } from 'apps/auth/src/schemas/user.schema';
 import { Model } from 'mongoose';
 import { ValidateUserPayloadDto } from './dto/validate-user.payload.dto';
 import { CreateAccessTokenPayloadDto } from './dto/create-access-token.payload.dto';

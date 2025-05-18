@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateRewardPayloadDto } from './dto/create-reward.payload.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Reward, RewardDocument } from 'apps/event/schemas/reward.schema';
+import { Reward, RewardDocument } from 'apps/event/src/schemas/reward.schema';
 import { Model, Types } from 'mongoose';
 import { GetRewardByIdPayloadDto } from './dto/get-reward.payload.dto';
 import { RewardResponseDto } from './dto/reward-response.dto';

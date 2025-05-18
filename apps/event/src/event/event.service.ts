@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Event, EventDocument } from 'apps/event/schemas/event.schema';
+import { Event, EventDocument } from 'apps/event/src/schemas/event.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { GetEventByIdPayloadDto } from './dto/get-event.payload.dto';
