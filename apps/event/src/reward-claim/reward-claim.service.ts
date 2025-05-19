@@ -8,11 +8,8 @@ import { ListRewardClaimsByUserIdPayloadDto } from './dto/list-reward-claims-by-
 import { Reward, RewardDocument } from 'apps/event/src/schemas/reward.schema';
 import { EventConditionStrategyFactory } from '@app/common/strategies/event-condition/event-condition-strategy.factory';
 import { RpcException } from '@nestjs/microservices';
-import {
-  ListRewardClaimsPayloadDto,
-  RewardClaimFilteredQuery,
-} from './dto/list-reward-claims.payload.dto';
-import { RewardClaimProgress } from '@app/common';
+import { ListRewardClaimsPayloadDto } from './dto/list-reward-claims.payload.dto';
+import { BaseRewardClaimFilterQuery } from '@app/common';
 
 @Injectable()
 export class RewardClaimService {
@@ -100,7 +97,7 @@ export class RewardClaimService {
     return claimDocs.map(doc => this.toRewardClaimResponse(doc));
   }
 
-  private async buildRewardClaimFilter(query: RewardClaimFilteredQuery) {
+  private async buildRewardClaimFilter(query: BaseRewardClaimFilterQuery) {
     const filter: any = {};
 
     if (query.progress) {
@@ -124,23 +121,6 @@ export class RewardClaimService {
     }
 
     return filter;
-  }
-
-  async listRewardClaimsByUserId(dto: ListRewardClaimsByUserIdPayloadDto) {
-    const { userId } = dto;
-
-    const claimDocs = await this.rewardClaimModel
-      .find({ userId })
-      .sort({ createdAt: -1 })
-      .populate({
-        path: 'rewardId',
-        populate: {
-          path: 'eventId',
-        },
-      })
-      .lean();
-
-    return claimDocs.map(doc => this.toRewardClaimResponse(doc));
   }
 
   async getRewardClaimById(dto: GetRewardByIdPayloadDto) {

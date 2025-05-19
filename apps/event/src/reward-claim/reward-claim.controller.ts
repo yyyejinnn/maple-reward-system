@@ -24,9 +24,4 @@ export class RewardClaimController {
   async getRewardClaimById(@Payload() dto: GetRewardByIdPayloadDto) {
     return await this.rewardClaimService.getRewardClaimById(dto);
   }
-
-  @MessagePattern({ cmd: RewardClaimPatterns.ListRewardClaimsByUserId })
-  async listRewardClaimsByUserId(@Payload() dto: ListRewardClaimsByUserIdPayloadDto) {
-    return await this.rewardClaimService.listRewardClaimsByUserId(dto);
-  }
 }

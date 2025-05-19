@@ -5,6 +5,7 @@ import {
   RewardPatterns,
   RewardClaimPatterns,
   AuthUser,
+  BaseRewardClaimFilterQuery,
 } from '@app/common';
 import { CreateEventReqDto } from './dto/post.create-event.req.dto';
 import { RegisterReqDTO } from './dto/post.register.req.dto';
@@ -91,19 +92,15 @@ export class GatewayService {
     return await this.rpcClientService.send(RewardClaimPatterns.ListRewardClaims, payload, 'event');
   }
 
-  async getRewardClaimById(id: string) {
-    return await this.sendEventRewardClaimMessage(id);
+  async listMyRewardClaims(user: AuthUser) {
+    const query: BaseRewardClaimFilterQuery = { userId: user.id };
+    const payload = { query };
+
+    return await this.rpcClientService.send(RewardClaimPatterns.ListRewardClaims, payload, 'event');
   }
 
-  async listMyRewardClaims(user: AuthUser) {
-    const { id } = user;
-    const payload = { userId: id };
-
-    return await this.rpcClientService.send(
-      RewardClaimPatterns.ListRewardClaimsByUserId,
-      payload,
-      'event',
-    );
+  async getRewardClaimById(id: string) {
+    return await this.sendEventRewardClaimMessage(id);
   }
 
   async getMyRewardClaimById(id: string, user: AuthUser) {
