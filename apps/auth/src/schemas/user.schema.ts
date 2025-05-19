@@ -4,7 +4,7 @@ import { HydratedDocument } from 'mongoose';
 
 export type UserDocument = HydratedDocument<User>;
 
-@Schema()
+@Schema({ timestamps: true })
 export class User {
   @Prop({ required: true, unique: true })
   email: string;
@@ -18,10 +18,7 @@ export class User {
   @Prop({ required: true, enum: UserRole, type: String, default: UserRole.USER })
   role: UserRole;
 
-  @Prop({ default: () => new Date() })
   createdAt: Date;
-
-  @Prop({ default: () => new Date() })
   updatedAt: Date;
 }
 

@@ -20,10 +20,14 @@ export * from './enums/reward-type.enum';
 export * from './enums/reward-claim-progress.enum';
 
 // interfaces
+export * from './interfaces/user/user.base.interface';
+export * from './interfaces/user/user.auth.interface';
+export * from './interfaces/user/user.jwt-payload.interface';
+
 export * from './interfaces/event-condition/invite-count-criteria.interface';
 export * from './interfaces/event-condition/level-reached-criteria.interface';
 export * from './interfaces/event-condition/login-days-criteria.interface';
-export * from './interfaces/auth-user.interface';
+
 export * from './interfaces/event-criteria-map.type';
 export * from './interfaces/event-period.interface';
 export * from './interfaces/event-condition.interface';

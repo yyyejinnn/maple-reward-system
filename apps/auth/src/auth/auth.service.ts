@@ -7,6 +7,7 @@ import { ValidateUserPayloadDto } from './dto/validate-user.payload.dto';
 import { CreateAccessTokenPayloadDto } from './dto/create-access-token.payload.dto';
 import { RegisterPayloadDto } from './dto/register.payload.dto';
 import { RpcException } from '@nestjs/microservices';
+import { BaseUser, JwtPayload } from '@app/common';
 
 @Injectable()
 export class AuthService {
@@ -36,8 +37,19 @@ export class AuthService {
       }
     }
 
-    const user = new this.userModel({ email, nickname, password, role });
+    const user = new this.userModel({
+      email,
+      nickname,
+      password: this.hashPassword(password),
+      role,
+    });
     await user.save();
+  }
+
+  private hashPassword(pwd: string) {
+    // pwd 암호화 logic...
+
+    return pwd; // 암호화된 pwd
   }
 
   async validateUser(dto: ValidateUserPayloadDto) {
@@ -59,9 +71,21 @@ export class AuthService {
   }
 
   async createAccessToken(dto: CreateAccessTokenPayloadDto) {
-    const payload = dto;
+    const payload = this.getPayload(dto);
+
     const accessToken = this.jwtService.sign(payload);
 
     return { accessToken };
+  }
+
+  private getPayload(user: BaseUser): JwtPayload {
+    const { id, email, nickname, role } = user;
+
+    return {
+      id,
+      email,
+      nickname,
+      role,
+    };
   }
 }
