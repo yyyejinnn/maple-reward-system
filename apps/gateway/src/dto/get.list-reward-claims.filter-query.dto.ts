@@ -1,6 +1,6 @@
 import { BaseRewardClaimFilterQuery, RewardClaimProgress } from '@app/common';
 
-export class RewardClaimFilterQueryDto implements BaseRewardClaimFilterQuery {
+export class RewardClaimsFilterQueryDto implements BaseRewardClaimFilterQuery {
   eventId?: string;
   userId?: string;
   progress?: RewardClaimProgress;

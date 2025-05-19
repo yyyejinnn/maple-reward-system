@@ -1,6 +1,15 @@
-import { Body, Controller, Get, Param, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { GatewayService } from './gateway.service';
-
 import { CreateEventReqDto } from './dto/post.create-event.req.dto';
 import { RegisterReqDTO } from './dto/post.register.req.dto';
 import { CreateRewardReqDto } from './dto/post.create-reward.req.dto';
@@ -8,24 +17,16 @@ import { CreateRewardClaimReqDto } from './dto/post.create-reward-claim.req.dto'
 import { JwtAuthGuard } from './passport/jwt/jwt.guard';
 import { LocalAuthGuard } from './passport/local/local.guard';
 import { User } from './decorators/user.decorator';
-import { AuthUser } from '@app/common';
+import { AuthUser, BaseUser } from '@app/common';
 import { Roles } from './role/role.decorator';
 import { UserRole } from '@app/common/enums/user-role.enum';
+import { RolesGuard } from './role/role.guard';
+import { RewardClaimsFilterQueryDto } from './dto/get.list-reward-claims.filter-query.dto';
+import { MyRewardClaimsFilterQueryDto } from './dto/get.my.list-reward-claims.filter-query.dto';
 
 @Controller()
 export class GatewayController {
   constructor(private readonly gatewayService: GatewayService) {}
-
-  @Get()
-  getHello(): string {
-    return this.gatewayService.getHello();
-  }
-
-  @Get('/test')
-  @UseGuards(JwtAuthGuard)
-  test(): string {
-    return this.gatewayService.getHello();
-  }
 
   //auth
   @Post('/auth/register')
@@ -35,16 +36,15 @@ export class GatewayController {
 
   @UseGuards(LocalAuthGuard)
   @Post('/auth/login')
-  async login(@User() user: AuthUser) {
+  async login(@User() user: BaseUser) {
     return await this.gatewayService.login(user);
   }
 
   // event - events
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.OPERATOR, UserRole.ADMIN)
   @Post('/events')
   async createEvent(@Body() dto: CreateEventReqDto, @User() user: AuthUser) {
-    // 후에 보상 등록 로직 필요
     return await this.gatewayService.createEvent(dto, user);
   }
 
@@ -61,7 +61,7 @@ export class GatewayController {
   }
 
   // event - rewards
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.OPERATOR, UserRole.ADMIN)
   @Post('/rewards')
   async createReward(@Body() dto: CreateRewardReqDto, @User() user: AuthUser) {
@@ -81,21 +81,21 @@ export class GatewayController {
   }
 
   // event - claims
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.USER)
   @Post('/reward-claims')
   async createRewardClaim(@Body() dto: CreateRewardClaimReqDto, @User() user: AuthUser) {
     return await this.gatewayService.createRewardClaim(dto, user);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.OPERATOR, UserRole.ADMIN, UserRole.AUDITOR)
   @Get('/reward-claims')
-  async listRewardClaims() {
-    return this.gatewayService.listRewardClaims();
+  async listRewardClaims(@Query() query: RewardClaimsFilterQueryDto) {
+    return this.gatewayService.listRewardClaims(query);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.OPERATOR, UserRole.ADMIN, UserRole.AUDITOR)
   @Get('/reward-claims/:id')
   async getRewardClaimById(@Param('id') id: string) {
@@ -103,18 +103,18 @@ export class GatewayController {
   }
 
   // 유저용
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.USER)
-  async listMyRewardClaims(@User() user: AuthUser) {
-    // 소유권 확인 필요
-    return this.gatewayService.listMyRewardClaims(user);
+  @Get('/my/reward-claims')
+  async listMyRewardClaims(@Query() query: MyRewardClaimsFilterQueryDto, @User() user: AuthUser) {
+    return this.gatewayService.listMyRewardClaims(query, user);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.USER)
   @Get('/my/reward-claims/:id')
   async getMyRewardClaimById(@Param('id') id: string, @User() user: AuthUser) {
-    // 소유권 확인 필요
-    return this.gatewayService.getMyRewardClaimById(id);
+    // claimId url 노출 -> 소유권 확인 필요
+    return this.gatewayService.getMyRewardClaimById(id, user);
   }
 }

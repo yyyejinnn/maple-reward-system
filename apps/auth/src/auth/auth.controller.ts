@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, NotFoundException, Post, Request, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { AuthPatterns } from '@app/common';
 import { ValidateUserPayloadDto } from './dto/validate-user.payload.dto';
 import { CreateAccessTokenPayloadDto } from './dto/create-access-token.payload.dto';
@@ -24,19 +24,4 @@ export class AuthController {
   async validateUser(@Payload() dto: ValidateUserPayloadDto) {
     return this.authService.validateUser(dto);
   }
-
-  // @UseGuards(LocalAuthGuard)
-  // @Post('/login')
-  // async login(@Request() req) {
-  //   const { user } = req; // deco 수정예정
-
-  //   return this.authService.login(user);
-  // }
-
-  // @UseGuards(JwtAuthGuard)
-  // @Get('test')
-  // @MessagePattern({ cmd: 'test' })
-  // async test() {
-  //   return 'pong';
-  // }
 }

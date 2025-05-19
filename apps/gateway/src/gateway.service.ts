@@ -13,7 +13,9 @@ import { CreateRewardReqDto } from './dto/post.create-reward.req.dto';
 import { CreateRewardClaimReqDto } from './dto/post.create-reward-claim.req.dto';
 import { RpcClientService } from './rpc-client/rpc-client.service';
 import { RewardClaimPolicyService } from './policies/reward-cliam.policy.service';
-import { RewardClaimFilterQueryDto } from './dto/get.list-reward-claim.filter-query.dto';
+
+import { RewardClaimsFilterQueryDto } from './dto/get.list-reward-claims.filter-query.dto';
+import { MyRewardClaimsFilterQueryDto } from './dto/get.my.list-reward-claims.filter-query.dto';
 
 @Injectable()
 export class GatewayService {
@@ -21,10 +23,6 @@ export class GatewayService {
     private rpcClientService: RpcClientService,
     private claimPolicyService: RewardClaimPolicyService,
   ) {}
-
-  getHello(): string {
-    return `GW! ${process.env.PORT}`;
-  }
 
   // auth
   async register(dto: RegisterReqDTO) {
@@ -86,15 +84,16 @@ export class GatewayService {
     );
   }
 
-  async listRewardClaims(query: RewardClaimFilterQueryDto) {
+  async listRewardClaims(query: RewardClaimsFilterQueryDto) {
     const payload = { query };
 
     return await this.rpcClientService.send(RewardClaimPatterns.ListRewardClaims, payload, 'event');
   }
 
-  async listMyRewardClaims(user: AuthUser) {
-    const query: BaseRewardClaimFilterQuery = { userId: user.id };
-    const payload = { query };
+  async listMyRewardClaims(query: MyRewardClaimsFilterQueryDto, user: AuthUser) {
+    const rpcQuery: BaseRewardClaimFilterQuery = { ...query, userId: user.id };
+
+    const payload = { query: rpcQuery };
 
     return await this.rpcClientService.send(RewardClaimPatterns.ListRewardClaims, payload, 'event');
   }
@@ -106,7 +105,7 @@ export class GatewayService {
   async getMyRewardClaimById(id: string, user: AuthUser) {
     const claim = await this.sendEventRewardClaimMessage(id);
 
-    this.claimPolicyService.assertViewOwner(user, claim);
+    this.claimPolicyService.assertViewOwnerClaim(user, claim);
 
     return claim;
   }

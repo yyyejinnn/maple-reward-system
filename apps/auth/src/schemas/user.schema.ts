@@ -23,19 +23,3 @@ export class User {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
-
-// 임시
-UserSchema.virtual('id').get(function () {
-  return this._id.toString();
-});
-
-UserSchema.set('toJSON', {
-  virtuals: true,
-  versionKey: false,
-  transform: (_, ret) => {
-    delete ret._id;
-    delete ret.__v;
-    // delete ret.password;
-    return ret;
-  },
-});
