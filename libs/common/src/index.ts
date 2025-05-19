@@ -31,3 +31,5 @@ export * from './interfaces/event-condition/login-days-criteria.interface';
 export * from './interfaces/event-criteria-map.type';
 export * from './interfaces/event-period.interface';
 export * from './interfaces/event-condition.interface';
+
+export * from './interfaces/dto/base.reward-claim.filter-query.interface';

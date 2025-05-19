@@ -2,12 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { CreateRewardClaimPayloadDto } from './dto/create-reward-claim.payload.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { RewardClaim, RewardClaimDocument } from 'apps/event/src/schemas/reward-claim.schema';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { GetRewardByIdPayloadDto } from '../reward/dto/get-reward.payload.dto';
 import { ListRewardClaimsByUserIdPayloadDto } from './dto/list-reward-claims-by-user-id.payload.dto';
 import { Reward, RewardDocument } from 'apps/event/src/schemas/reward.schema';
 import { EventConditionStrategyFactory } from '@app/common/strategies/event-condition/event-condition-strategy.factory';
 import { RpcException } from '@nestjs/microservices';
+import {
+  ListRewardClaimsPayloadDto,
+  RewardClaimFilteredQuery,
+} from './dto/list-reward-claims.payload.dto';
+import { RewardClaimProgress } from '@app/common';
 
 @Injectable()
 export class RewardClaimService {
@@ -78,9 +83,11 @@ export class RewardClaimService {
     }
   }
 
-  async listRewardClaims() {
+  async listRewardClaimsByFilter(dto: ListRewardClaimsPayloadDto) {
+    const { query } = dto;
+
     const claimDocs = await this.rewardClaimModel
-      .find()
+      .find(await this.buildRewardClaimFilter(query))
       .sort({ createdAt: -1 })
       .populate({
         path: 'rewardId',
@@ -91,6 +98,32 @@ export class RewardClaimService {
       .lean();
 
     return claimDocs.map(doc => this.toRewardClaimResponse(doc));
+  }
+
+  private async buildRewardClaimFilter(query: RewardClaimFilteredQuery) {
+    const filter: any = {};
+
+    if (query.progress) {
+      filter.progress = query.progress;
+    }
+
+    if (query.userId) {
+      filter.userId = query.userId;
+    }
+
+    // claim -> reward -> event
+    if (query.eventId) {
+      const rewardDocs = await this.rewardModel
+        .find({
+          eventId: new Types.ObjectId(query.eventId),
+        })
+        .select('_id');
+
+      const rewardIds = rewardDocs.map(doc => doc._id.toString());
+      filter.rewardId = { $in: rewardIds };
+    }
+
+    return filter;
   }
 
   async listRewardClaimsByUserId(dto: ListRewardClaimsByUserIdPayloadDto) {

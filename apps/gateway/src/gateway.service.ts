@@ -12,6 +12,7 @@ import { CreateRewardReqDto } from './dto/post.create-reward.req.dto';
 import { CreateRewardClaimReqDto } from './dto/post.create-reward-claim.req.dto';
 import { RpcClientService } from './rpc-client/rpc-client.service';
 import { RewardClaimPolicyService } from './policies/reward-cliam.policy.service';
+import { RewardClaimFilterQueryDto } from './dto/get.list-reward-claim.filter-query.dto';
 
 @Injectable()
 export class GatewayService {
@@ -84,8 +85,10 @@ export class GatewayService {
     );
   }
 
-  async listRewardClaims() {
-    return await this.rpcClientService.send(RewardClaimPatterns.ListRewardClaims, {}, 'event');
+  async listRewardClaims(query: RewardClaimFilterQueryDto) {
+    const payload = { query };
+
+    return await this.rpcClientService.send(RewardClaimPatterns.ListRewardClaims, payload, 'event');
   }
 
   async getRewardClaimById(id: string) {
