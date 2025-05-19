@@ -7,6 +7,7 @@ import { HttpExceptionFilter } from '@app/common/exception-filters/http.exceptio
 import { HttpResponseInterceptor } from '@app/common/interceptors/http.response.interceptor';
 import { RpcClientModule } from './rpc-client/rpc-client.module';
 import { AuthPassportModule } from './passport/passport.module';
+import { PolicyModule } from './policies/policy.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { AuthPassportModule } from './passport/passport.module';
     }),
     RpcClientModule,
     AuthPassportModule,
+    PolicyModule,
   ],
   controllers: [GatewayController],
   providers: [

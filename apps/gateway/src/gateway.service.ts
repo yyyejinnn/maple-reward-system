@@ -11,10 +11,14 @@ import { RegisterReqDTO } from './dto/post.register.req.dto';
 import { CreateRewardReqDto } from './dto/post.create-reward.req.dto';
 import { CreateRewardClaimReqDto } from './dto/post.create-reward-claim.req.dto';
 import { RpcClientService } from './rpc-client/rpc-client.service';
+import { RewardClaimPolicyService } from './policies/reward-cliam.policy.service';
 
 @Injectable()
 export class GatewayService {
-  constructor(private rpcClientService: RpcClientService) {}
+  constructor(
+    private rpcClientService: RpcClientService,
+    private claimPolicyService: RewardClaimPolicyService,
+  ) {}
 
   getHello(): string {
     return `GW! ${process.env.PORT}`;
@@ -99,12 +103,15 @@ export class GatewayService {
     );
   }
 
-  async getMyRewardClaimById(id: string) {
-    return await this.sendEventRewardClaimMessage(id);
+  async getMyRewardClaimById(id: string, user: AuthUser) {
+    const claim = await this.sendEventRewardClaimMessage(id);
+
+    this.claimPolicyService.assertViewOwner(user, claim);
+
+    return claim;
   }
 
   private async sendEventRewardClaimMessage(claimId: string) {
-    // 리소스 '소유권' 확인 필요??
     const payload = { id: claimId };
 
     return await this.rpcClientService.send(

@@ -8,7 +8,7 @@ import {
 } from '@app/common';
 import { BadRequestException, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { catchError, defaultIfEmpty, lastValueFrom, throwError } from 'rxjs';
+import { catchError, defaultIfEmpty, lastValueFrom, throwError, timeout } from 'rxjs';
 
 type Patterns = AuthPatterns | EventPatterns | RewardPatterns | RewardClaimPatterns;
 type Servers = 'auth' | 'event';
@@ -34,6 +34,7 @@ export class RpcClientService {
       this.getClient(server)
         .send({ cmd: pattern }, payload)
         .pipe(
+          timeout(5000),
           defaultIfEmpty({
             message: '요청 성공',
           }),
