@@ -10,6 +10,16 @@ import { BadRequestException, HttpException, HttpStatus, Inject, Injectable } fr
 import { ClientProxy } from '@nestjs/microservices';
 import { catchError, defaultIfEmpty, lastValueFrom, throwError } from 'rxjs';
 
+type Patterns = AuthPatterns | EventPatterns | RewardPatterns | RewardClaimPatterns;
+type Servers = 'auth' | 'event';
+
+const AUTH_PATTERNS = Object.values(AuthPatterns) as string[];
+const EVENT_PATTERNS = [
+  ...Object.values(EventPatterns),
+  ...Object.values(RewardPatterns),
+  ...Object.values(RewardClaimPatterns),
+] as string[];
+
 @Injectable()
 export class RpcClientService {
   constructor(
@@ -17,29 +27,43 @@ export class RpcClientService {
     @Inject(EVENT_SERVICE) private readonly eventClient: ClientProxy,
   ) {}
 
-  async send(
-    pattern: AuthPatterns | EventPatterns | RewardPatterns | RewardClaimPatterns,
-    payload: any,
-    server: 'auth' | 'event',
-  ) {
-    const client = this.getClient(server);
+  async send(pattern: Patterns, payload: any, server: Servers) {
+    this.validatePattern(pattern, server);
 
     return await lastValueFrom(
-      client.send({ cmd: pattern }, payload).pipe(
-        defaultIfEmpty({
-          message: '요청 성공',
-        }),
-        catchError(err => {
-          return throwError(
-            () =>
-              new HttpException(err.message, err?.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR),
-          );
-        }),
-      ),
+      this.getClient(server)
+        .send({ cmd: pattern }, payload)
+        .pipe(
+          defaultIfEmpty({
+            message: '요청 성공',
+          }),
+          catchError(err => {
+            return throwError(
+              () =>
+                new HttpException(err.message, err?.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR),
+            );
+          }),
+        ),
     );
   }
 
-  private getClient(server: 'auth' | 'event'): ClientProxy {
+  private validatePattern(pattern: Patterns, server: Servers) {
+    if (server === 'auth' && !AUTH_PATTERNS.includes(pattern)) {
+      throw new HttpException(
+        `Auth 서버에 유효하지 않은 pattern 입니다.(${pattern})`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (server === 'event' && !EVENT_PATTERNS.includes(pattern)) {
+      throw new HttpException(
+        `Event 서버에 유효하지 않은 pattern 입니다.(${pattern})`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  private getClient(server: Servers): ClientProxy {
     switch (server) {
       case 'auth':
         return this.authClient;

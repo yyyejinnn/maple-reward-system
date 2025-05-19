@@ -7,9 +7,6 @@ export class TcpExceptionFilter implements RpcExceptionFilter<RpcException> {
   catch(exception: RpcException, host: ArgumentsHost): Observable<any> {
     const error = exception.getError();
 
-    console.log(error);
-    console.log(typeof error === 'string');
-
     return throwError(() =>
       typeof error === 'string'
         ? { statusCode: 400, message: error }

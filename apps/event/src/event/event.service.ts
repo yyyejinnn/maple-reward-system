@@ -66,10 +66,7 @@ export class EventService {
   private async saveEvent(fields: {
     title: string;
     description?: string;
-    condition: {
-      type: string; // 수정 예정
-      criteria: Record<string, any>;
-    };
+    condition: EventCondition;
     period: EventPeriod;
     isActive: boolean;
     createdBy: string;
