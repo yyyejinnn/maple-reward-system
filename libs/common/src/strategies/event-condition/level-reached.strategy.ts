@@ -5,9 +5,9 @@ import { EventConditionStrategy } from './event-condition-strategy.interface';
 @Injectable()
 export class LevelReachedStrategy implements EventConditionStrategy<EventType.LEVEL_REACHED> {
   async validateCondition(userId: string, criteria: LevelReachedCriteria) {
-    // 유저 레벨 >= criteria.minLevel
-    const level = 15;
-    return level >= criteria.minLevel;
+    const mockLevel = 15; //성공 케이스
+
+    return mockLevel >= criteria.minLevel;
   }
 
   validateCriteriaStructure(criteria: object) {
@@ -15,8 +15,10 @@ export class LevelReachedStrategy implements EventConditionStrategy<EventType.LE
       return { valid: false, cause: '"level" 필드가 누락됐습니다.' };
     }
 
-    if (typeof criteria?.['count'] !== 'number') {
+    if (typeof criteria?.['level'] !== 'number') {
       return { valid: false, cause: '"level" 필드는 number여야 합니다.' };
     }
+
+    return { valid: true };
   }
 }

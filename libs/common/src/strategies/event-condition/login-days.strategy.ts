@@ -5,9 +5,9 @@ import { EventConditionStrategy } from './event-condition-strategy.interface';
 @Injectable()
 export class LoginDaysStrategy implements EventConditionStrategy<EventType.LOGIN_DAYS> {
   async validateCondition(userId: string, criteria: LoginDaysCriteria) {
-    // 유저 로그인 일수 >= criteria.days
-    const days = 10;
-    return days >= criteria.days;
+    const mockDays = 5; // 성공 케이스
+
+    return mockDays >= criteria.days;
   }
 
   validateCriteriaStructure(criteria: object) {
@@ -15,8 +15,10 @@ export class LoginDaysStrategy implements EventConditionStrategy<EventType.LOGIN
       return { valid: false, cause: '"days" 필드가 누락됐습니다.' };
     }
 
-    if (typeof criteria?.['count'] !== 'number') {
+    if (typeof criteria?.['days'] !== 'number') {
       return { valid: false, cause: '"days" 필드는 number여야 합니다.' };
     }
+
+    return { valid: true };
   }
 }

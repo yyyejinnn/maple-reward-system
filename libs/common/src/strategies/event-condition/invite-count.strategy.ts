@@ -5,10 +5,9 @@ import { EventType, InviteCountCriteria } from '@app/common';
 @Injectable()
 export class InviteCountStrategy implements EventConditionStrategy<EventType.INVITE_COUNT> {
   async validateCondition(userId: string, criteria: InviteCountCriteria) {
-    // 친구 초대 수 >= criteria.count
+    const mockInviteCount = 3; // 실패 케이스
 
-    const cnt = 10;
-    return cnt >= criteria.count;
+    return mockInviteCount >= criteria.count;
   }
 
   validateCriteriaStructure(criteria: object) {
