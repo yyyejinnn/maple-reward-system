@@ -4,13 +4,13 @@ import { EventConditionStrategy } from './event-condition-strategy.interface';
 
 @Injectable()
 export class LevelReachedStrategy implements EventConditionStrategy<EventType.LEVEL_REACHED> {
-  async validate(userId: string, criteria: LevelReachedCriteria) {
+  async validateCondition(userId: string, criteria: LevelReachedCriteria) {
     // 유저 레벨 >= criteria.minLevel
     const level = 15;
     return level >= criteria.minLevel;
   }
 
-  validateStructure(criteria: object) {
+  validateCriteriaStructure(criteria: object) {
     if (criteria?.['level'] == null) {
       return { valid: false, cause: '"level" 필드가 누락됐습니다.' };
     }

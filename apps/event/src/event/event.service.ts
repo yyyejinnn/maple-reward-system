@@ -43,7 +43,7 @@ export class EventService {
     }
 
     const strategy = this.eventConditionFactory.getStrategy(type);
-    const { valid, cause } = strategy.validateStructure(criteria);
+    const { valid, cause } = strategy.validateCriteriaStructure(criteria);
 
     if (!valid) {
       throw new RpcException(cause ?? 'criteria를 다시 한번 확인해주세요.');

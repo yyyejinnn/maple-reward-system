@@ -8,7 +8,6 @@ import { ListRewardClaimsByUserIdPayloadDto } from './dto/list-reward-claims-by-
 import { Reward, RewardDocument } from 'apps/event/src/schemas/reward.schema';
 import { EventConditionStrategyFactory } from '@app/common/strategies/event-condition/event-condition-strategy.factory';
 import { RpcException } from '@nestjs/microservices';
-import { RewardClaimProgress } from '@app/common';
 
 @Injectable()
 export class RewardClaimService {
@@ -72,7 +71,7 @@ export class RewardClaimService {
 
     const strategy = this.conditionFactory.getStrategy(type);
 
-    const isConditionMet = await strategy.validate(userId, criteria);
+    const isConditionMet = await strategy.validateCondition(userId, criteria);
 
     if (!isConditionMet) {
       throw new RpcException('보상 조건을 충족하지 못했습니다.');

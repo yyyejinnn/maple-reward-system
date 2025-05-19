@@ -4,14 +4,14 @@ import { EventType, InviteCountCriteria } from '@app/common';
 
 @Injectable()
 export class InviteCountStrategy implements EventConditionStrategy<EventType.INVITE_COUNT> {
-  async validate(userId: string, criteria: InviteCountCriteria) {
+  async validateCondition(userId: string, criteria: InviteCountCriteria) {
     // 친구 초대 수 >= criteria.count
 
     const cnt = 10;
     return cnt >= criteria.count;
   }
 
-  validateStructure(criteria: object) {
+  validateCriteriaStructure(criteria: object) {
     if (criteria?.['count'] == null) {
       return { valid: false, cause: '"count" 필드가 누락됐습니다.' };
     }
