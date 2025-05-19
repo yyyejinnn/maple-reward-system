@@ -1,5 +1,6 @@
 import mongoose, { Schema, Types } from 'mongoose';
 
+/** 실행 시 임의의 유저, 이벤트, 보상 데이터 생성 */
 const AUTH_URI = 'mongodb://mongo:27017/auth-db';
 const EVENT_URI = 'mongodb://mongo:27017/event-db';
 
@@ -22,7 +23,7 @@ async function seedAuthDB() {
 
   const User = conn.model('User', userSchema);
 
-  const dummyUsers = [
+  const mockUsers = [
     {
       email: 'user1@email.com',
       password: '1234',
@@ -55,7 +56,7 @@ async function seedAuthDB() {
     },
   ];
 
-  for (const user of dummyUsers) {
+  for (const user of mockUsers) {
     try {
       await User.updateOne({ email: user.email }, user, { upsert: true });
       console.log(`✅ 유저: ${user.email}`);
@@ -113,7 +114,7 @@ async function seedEventDB() {
     return;
   }
 
-  const seedData = [
+  const mockDatas = [
     {
       event: {
         title: '출석 3일 이벤트',
@@ -185,7 +186,7 @@ async function seedEventDB() {
     },
   ];
 
-  for (const { event, reward } of seedData) {
+  for (const { event, reward } of mockDatas) {
     try {
       const createdEvent = await new Event(event).save();
       await new Reward({ ...reward, eventId: createdEvent._id }).save();

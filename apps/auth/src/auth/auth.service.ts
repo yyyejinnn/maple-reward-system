@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from 'apps/auth/src/schemas/user.schema';
+import { User, UserDocument } from '../schemas/user.schema';
 import { Model } from 'mongoose';
 import { ValidateUserPayloadDto } from './dto/validate-user.payload.dto';
 import { CreateAccessTokenPayloadDto } from './dto/create-access-token.payload.dto';
 import { RegisterPayloadDto } from './dto/register.payload.dto';
 import { RpcException } from '@nestjs/microservices';
-import { BaseUser, JwtPayload } from '@app/common';
+import { AuthUser, BaseUser, JwtPayload } from '@app/common';
 
 @Injectable()
 export class AuthService {
@@ -62,8 +62,14 @@ export class AuthService {
       throw new RpcException('비밀번호가 일치하지않습니다.');
     }
 
-    const { password, ...result } = user.toJSON();
-    return result;
+    const reqUser: AuthUser = {
+      id: user._id,
+      email: user.email,
+      nickname: user.nickname,
+      role: user.role,
+    };
+
+    return reqUser;
   }
 
   async createAccessToken(dto: CreateAccessTokenPayloadDto) {
