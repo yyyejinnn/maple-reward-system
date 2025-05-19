@@ -11,12 +11,12 @@ export class LevelReachedStrategy implements EventConditionStrategy<EventType.LE
   }
 
   validateCriteriaStructure(criteria: object) {
-    if (criteria?.['level'] == null) {
-      return { valid: false, cause: '"level" 필드가 누락됐습니다.' };
+    if (criteria?.['minLevel'] == null) {
+      return { valid: false, cause: '"minLevel" 필드가 누락됐습니다.' };
     }
 
-    if (typeof criteria?.['level'] !== 'number') {
-      return { valid: false, cause: '"level" 필드는 number여야 합니다.' };
+    if (typeof criteria?.['minLevel'] !== 'number') {
+      return { valid: false, cause: '"minLevel" 필드는 number여야 합니다.' };
     }
 
     return { valid: true };

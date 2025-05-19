@@ -10,8 +10,7 @@ import { RpcClientService } from './rpc-client.service';
         name: AUTH_SERVICE,
         transport: Transport.TCP,
         options: {
-          // host: 'auth',
-          host: '0.0.0.0',
+          host: 'auth',
           port: 3001,
         },
       },
@@ -19,8 +18,7 @@ import { RpcClientService } from './rpc-client.service';
         name: EVENT_SERVICE,
         transport: Transport.TCP,
         options: {
-          // host: 'event',
-          host: '0.0.0.0',
+          host: 'event',
           port: 3002,
         },
       },

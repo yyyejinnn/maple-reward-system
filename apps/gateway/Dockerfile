@@ -11,6 +11,7 @@ COPY apps/gateway ./apps/gateway
 RUN npm install
 RUN npm run build:gateway
 
-CMD ["node", "dist/apps/gateway/src/main"]
+CMD sh -c "node dist/apps/gateway/src/seeds/seeder.js || echo '⚠️ Seed failed'; node dist/apps/gateway/src/main.js"
+
 
 
