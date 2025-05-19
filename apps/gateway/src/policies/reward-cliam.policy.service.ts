@@ -1,10 +1,9 @@
 import { AuthUser, UserRole } from '@app/common';
-import { BadRequestException, ForbiddenException, HttpException, Injectable } from '@nestjs/common';
-import { RewardClaim } from 'apps/event/src/schemas/reward-claim.schema';
+import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class RewardClaimPolicyService {
-  assertViewOwnerClaim(user: AuthUser, claim: RewardClaim) {
+  assertViewOwnerClaim(user: AuthUser, claim: any) {
     if (!user || !claim) {
       throw new BadRequestException('잘못된 요청입니다.');
     }

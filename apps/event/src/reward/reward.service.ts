@@ -24,19 +24,19 @@ export class RewardService {
   }
 
   private async validateEventOfReward(eventId: string) {
-    const event = await this.eventModel.findById({ eventId }).lean();
+    const _idOfEvent = new Types.ObjectId(eventId);
+    const existsEvent = await this.eventModel.exists(_idOfEvent);
 
-    if (!event) {
+    if (!existsEvent) {
       throw new RpcException('존재하지 않는 이벤트 입니다.');
     }
 
-    if (!event.isActive) {
-      throw new RpcException('비활성화 된 이벤트 입니다.');
-    }
+    const existsConnectedReward = await this.rewardModel.exists({
+      eventId: _idOfEvent,
+    });
 
-    const now = new Date();
-    if (event.period?.start > now || event.period?.end < now) {
-      throw new RpcException('이벤트 기간이 아닙니다.');
+    if (existsConnectedReward) {
+      throw new RpcException('이미 보상이 등록된 이벤트 입니다.');
     }
   }
 

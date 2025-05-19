@@ -52,13 +52,17 @@ export class EventService {
 
   private validateEventPeriod(period: EventPeriod) {
     const { start, end } = period;
+
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+
     const now = new Date();
 
-    if (period.start < now) {
+    if (startDate < now) {
       throw new RpcException('이벤트 시작일은 현재 시각보다 미래여야 합니다.');
     }
 
-    if (start > end) {
+    if (startDate > endDate) {
       throw new RpcException('이벤트 시작일은 종료일보다 빨라야합니다.');
     }
   }
