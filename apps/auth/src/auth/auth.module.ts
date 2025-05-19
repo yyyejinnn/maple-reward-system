@@ -17,7 +17,7 @@ import { JWT_SECRET_KEY } from '@app/common';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         secretOrPrivateKey: configService.get(JWT_SECRET_KEY),
-        signOptions: { expiresIn: '60000000s' },
+        signOptions: { expiresIn: '6h' },
       }),
       inject: [ConfigService],
     }),

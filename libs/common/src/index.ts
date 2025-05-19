@@ -1,6 +1,3 @@
-export * from './common.module';
-export * from './common.service';
-
 // patterns
 export * from './patterns/auth.patterns';
 export * from './patterns/event.patterns';

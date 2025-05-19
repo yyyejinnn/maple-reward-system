@@ -16,6 +16,8 @@ services:
     environment:
       - PORT=3001
       - MONGO_URI=mongodb://mongo:27017/auth-db
+      - JWT_SECRET_KEY=jwt-secret-key
+
     depends_on:
       - mongo
 
@@ -39,6 +41,7 @@ services:
       - '3000:3000'
     environment:
       - PORT=3000
+      - JWT_SECRET_KEY=jwt-secret-key
     depends_on:
       - auth
       - event
