@@ -1,10 +1,11 @@
+import { BaseSchema } from '@app/common/interfaces/base-schema';
 import { Prop, raw, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
 export type EventDocument = HydratedDocument<Event>;
 
 @Schema({ timestamps: true })
-export class Event {
+export class Event extends BaseSchema {
   @Prop({ required: true })
   title: string;
 
@@ -15,6 +16,7 @@ export class Event {
     raw({
       type: { type: String, required: true },
       criteria: { type: Object, required: true },
+      _id: false,
     }),
   )
   condition: {
@@ -39,9 +41,6 @@ export class Event {
 
   @Prop() // user._id
   createdBy: string;
-
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);

@@ -16,10 +16,6 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  getHello(): string {
-    return `Auth! ${process.env.PORT}, ${process.env.MONGO_URI}`;
-  }
-
   async register(dto: RegisterPayloadDto) {
     const { email, nickname, password, role } = dto;
 

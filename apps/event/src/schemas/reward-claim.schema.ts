@@ -2,11 +2,12 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 import { Reward } from './reward.schema';
 import { RewardClaimProgress } from '@app/common';
+import { BaseSchema } from '@app/common/interfaces/base-schema';
 
 export type RewardClaimDocument = HydratedDocument<RewardClaim>;
 
 @Schema({ timestamps: true })
-export class RewardClaim {
+export class RewardClaim extends BaseSchema {
   @Prop({ type: Types.ObjectId, required: true, ref: Reward.name })
   rewardId: Types.ObjectId;
 
@@ -32,9 +33,6 @@ export class RewardClaim {
 
   @Prop()
   confirmedAt?: Date;
-
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export const RewardClaimSchema = SchemaFactory.createForClass(RewardClaim);

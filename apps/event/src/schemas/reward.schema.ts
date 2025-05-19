@@ -1,11 +1,12 @@
 import { RewardType } from '@app/common';
+import { BaseSchema } from '@app/common/interfaces/base-schema';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 
 export type RewardDocument = HydratedDocument<Reward>;
 
 @Schema({ timestamps: true })
-export class Reward {
+export class Reward extends BaseSchema {
   @Prop({ type: Types.ObjectId, required: true, ref: Event.name })
   eventId: Types.ObjectId;
 
@@ -23,9 +24,6 @@ export class Reward {
 
   @Prop() // user._id
   createdBy: string;
-
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export const RewardSchema = SchemaFactory.createForClass(Reward);
