@@ -4,7 +4,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { RewardClaim, RewardClaimDocument } from 'apps/event/src/schemas/reward-claim.schema';
 import { Model, Types } from 'mongoose';
 import { GetRewardByIdPayloadDto } from '../reward/dto/get-reward.payload.dto';
-import { ListRewardClaimsByUserIdPayloadDto } from './dto/list-reward-claims-by-user-id.payload.dto';
 import { Reward, RewardDocument } from 'apps/event/src/schemas/reward.schema';
 import { EventConditionStrategyFactory } from '@app/common/strategies/event-condition/event-condition-strategy.factory';
 import { RpcException } from '@nestjs/microservices';
@@ -139,8 +138,27 @@ export class RewardClaimService {
     return this.toRewardClaimResponse(claimDoc);
   }
 
-  // 수정 필요
   private toRewardClaimResponse(doc: any) {
-    return doc;
+    const reward = doc.rewardId;
+    const event = reward.eventId;
+
+    return {
+      id: doc._id.toString(),
+      reward: {
+        id: reward._id.toString(),
+        type: reward.type,
+        name: reward.name,
+        amount: reward.amount,
+        meta: reward.meta,
+      },
+      event: {
+        id: event._id.toString(),
+        title: event.title,
+        period: event.period,
+        isActive: event.isActive,
+      },
+      userId: doc.userId,
+      progress: doc.progresss,
+    };
   }
 }
