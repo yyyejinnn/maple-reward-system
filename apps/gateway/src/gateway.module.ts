@@ -8,6 +8,8 @@ import { HttpResponseInterceptor } from '@app/common/interceptors/http.response.
 import { RpcClientModule } from './rpc-client/rpc-client.module';
 import { AuthPassportModule } from './passport/passport.module';
 import { PolicyModule } from './policies/policy.module';
+import { JwtAuthGuard } from './passport/jwt/jwt.guard';
+import { RolesGuard } from './role/role.guard';
 
 @Module({
   imports: [
@@ -29,6 +31,16 @@ import { PolicyModule } from './policies/policy.module';
       provide: APP_INTERCEPTOR,
       useClass: HttpResponseInterceptor,
     },
+
+    // JwtGuard -> RoleGuard
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: RolesGuard,
+    // },
 
     GatewayService,
   ],
