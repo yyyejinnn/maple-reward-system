@@ -50,13 +50,13 @@ libs/common/
 
 - 애플리케이션은 Auth, Event, Gateway 서버 기준으로 분리했으며, 그 안에서 세부 도메인 단위로 모듈화했습니다.
 - 서버 별 역할과 책임을 확실하게 분리하고자 했습니다. 인증/인가 처리는 전부 Gateway에 전담하고, 내부 서버는 비즈니스 로직에 집중할 수 있도록 구성했습니다.
-- strategies 모듈을 event/ 와 libs/ 중 어디에 둘 지 고민하다, 확장될 가능성을 고려하여 libs/ 에 포함시켰습니다.
+- strategies 모듈을 `event/` 와 `libs/` 중 어디에 둘 지 고민하다, 확장될 가능성을 고려하여 `libs/` 에 포함시켰습니다.
 
 <br/>
 
 ## MSA - TCP 메시지 패턴 기반 통신
 #### HTTP vs TCP
-- 처음에는 익숙한 REST API 기반으로 통신하려했으나, Auth, Event 서버도 외부에 노출될 수 있다는 리스크를 인지했습니다. 따라서 내부 통신은 @nest/microservice 기반의 TCP로 , 외부 HTTP 요청은 Gatway만을 통할 수 있도록 구성했습니다.
+- 처음에는 익숙한 REST API 기반으로 통신하려했으나, Auth, Event 서버도 외부에 노출될 수 있다는 리스크를 인지했습니다. 따라서 내부 통신은 @nest/microservice 기반의 TCP로, 외부 HTTP 요청은 Gateway만을 통할 수 있도록 구성했습니다.
 - 요청에 대한 응답이 필요한 구조이기 때문에 이벤트 기반 대신 Request-Response 메시지 패턴을 적용했습니다.
     
 #### RcpClient wrapper 모듈 적용 (RpcClientModule)
@@ -105,8 +105,8 @@ libs/common/
 
 ## 보상 조건 충족 여부 검증 - Strategy 패턴, Factory 패턴
 - 정형화 되지 않은 이벤트 조건들을 어떻게 구조화할지가 가장 큰 고민했습니다. 출석, 친구 초대처럼 자주 쓰이는 조건을 각각의 전략으로 나눴습니다.
-    - validateCriteriaStructure: 이벤트 생성 시 DTO 구조 검증
-    - validateCondition: 보상 요청 시 조건 충족 여부 검증
+    - `validateCriteriaStructure`: 이벤트 생성 시 DTO 구조 검증
+    - `validateCondition`: 보상 요청 시 조건 충족 여부 검증
 - 전략 생성 팩토리를 적용하여 외부 결합도를 낮추고, 새로운 조건들의 유연한 확장을 고려했습니다.
 - 정성적 조건들은 어떻게 구조화할 수 있을지 고민 중에 있습니다.
 
@@ -167,7 +167,7 @@ GET: `/my/reward-claims/:id` (나의 보상 요청 내역 상세 조회)
 <br/>
 
 ### Request DTO 예시
-POST: `/auth/register` (유저 등록)
+**POST: `/auth/register` (유저 등록)**
 
 ```tsx
 {
@@ -180,7 +180,7 @@ POST: `/auth/register` (유저 등록)
 
 <br/>
 
-POST: `/auth/login` (로그인)
+**POST: `/auth/login` (로그인)**
 
 ```tsx
 {
@@ -191,7 +191,7 @@ POST: `/auth/login` (로그인)
 
 <br/>
 
-POST: `/events` (이벤트 생성)
+**POST: `/events` (이벤트 생성)**
 
 ```tsx
 {
@@ -213,7 +213,7 @@ POST: `/events` (이벤트 생성)
 
 <br/>
 
-POST: `/rewards` (보상 생성)
+**POST: `/rewards` (보상 생성)**
 
 ```tsx
 {
@@ -229,7 +229,7 @@ POST: `/rewards` (보상 생성)
 
 <br/>
 
-POST: `/reward-claims` (보상 요청)
+**POST: `/reward-claims` (보상 요청)**
 
 ```tsx
 {
@@ -239,7 +239,7 @@ POST: `/reward-claims` (보상 요청)
 
 <br/>
 
-GET: `/reward-claims` (모든 보상 요청 내역 조회)
+**GET: `/reward-claims` (모든 보상 요청 내역 조회)**
 
 ```tsx
 // query optional
@@ -252,7 +252,7 @@ GET: `/reward-claims` (모든 보상 요청 내역 조회)
 
 <br/>
 
-GET: `/my/reward-claims` (나의 모든 보상 요청 내역 조회)
+**GET: `/my/reward-claims` (나의 모든 보상 요청 내역 조회)**
 
 ```tsx
 // query optional    
