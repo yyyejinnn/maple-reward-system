@@ -21,7 +21,7 @@ export class EventConditionStrategyFactory {
       case EventType.LEVEL_REACHED:
         return this.levelReachedStrategy;
       default:
-        throw new Error(`지원하지 않는 조건 타입(${type})`);
+        throw new Error(`지원하지 않는 조건 타입입니다.(${type})`);
     }
   }
 }
