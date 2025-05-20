@@ -14,7 +14,23 @@ $ docker-compose down -v
 
 - 임의의 유저(user), 이벤트(event), 보상(reward) 데이터가 자동 생성됩니다.
 - [http://localhost:3000](http://localhost:3000/) 기준으로 호출할 수 있습니다.
+- API는 하단 [API 명세](#api-명세)에서 확인할 수 있습니다.
 
+<br/>
+
+## 이벤트/보상 관리 시스템
+
+### 목차 
+- [프로젝트 구조](#프로젝트-구조)
+- [MSA - TCP 메시지 패턴 기반 통신](#msa---tcp-메시지-패턴-기반-통신)
+- [인증/인가/권한 정책](#인증인가권한-정책)
+- [이벤트 조건 타입 구조화](#이벤트-조건-타입-구조화)
+- [보상 조건 충족 여부 검증 - Strategy 패턴, Factory 패턴](#보상-조건-충족-여부-검증---strategy-패턴-factory-패턴)
+- [스키마 설계 관련](#스키마-설계-관련)
+- [API 구조 및 URL 설계 관련](#api-구조-및-url-설계-관련)
+- [API 명세](#api-명세)
+
+  
 <br/>
 
 ## 프로젝트 구조
@@ -113,3 +129,135 @@ libs/common/
 - ‘나의 보상 요청 내역’처럼 유저가 소유한 자원을 필요로 할때, 어느 서버에서 다뤄야할 지 고민이 있었습니다. 최종적으로 스키마, 비즈니스 로직의 주체가 자원(Event)에 있다고 판단했습니다. 소유에 대한 개념은 URL 구조로 표현했습니다(ex. ‘/my/…’).
 #### 유저 정보 포함 방식 - Auth 호출 vs 중복 저장
 - 관리자가 ‘특정 유저의 보상 요청 내역을 조회’한다고 가정 했을 때, 정합성보다는 조회 성능이 더 중요하다고 판단했습니다. 따라서 Auth 서버를 호출하는 대신 유저 정보를 일부 중복 저장하는 방식으로 구현했습니다.
+
+<br/>
+
+## API 명세
+‼️ JWT
+`/auth` 제외, 모든 요청에 Authorization: Bearer <token> 헤더가 필요합니다.
+
+<br/>
+
+POST: `/auth/register` (유저 등록)
+ 
+POST: `/auth/login` (로그인)
+
+POST: `/events` (이벤트 생성)
+
+GET: `/events` (이벤트 목록 조회)
+
+GET: `/events/:id` (이벤트 상세 조회)
+
+POST: `/rewards` (보상 생성)
+
+GET: `/rewards` (보상 목록 조회)
+
+GET: `/rewards/:id` (보상 상세 조회)
+
+POST: `/reward-claims` (보상 요청)
+
+GET: `/reward-claims?query` (모든 보상 요청 내역 조회)
+
+GET: `/reward-claims/:id` (보상 요청 내역 상세 조회)
+
+GET: `/my/reward-claims?query` (나의 모든 보상 요청 내역 조회)
+
+GET: `/my/reward-claims/:id` (나의 보상 요청 내역 상세 조회)
+
+<br/>
+
+### Request DTO 예시
+POST: `/auth/register` (유저 등록)
+
+```tsx
+{
+    "email": "tester1@test.com",
+    "nickname": "tester1",
+    "role": 'USER' | 'OPERATOR' | 'AUDITOR' | 'ADMIN',
+    "password": "1234"
+}
+```
+
+<br/>
+
+POST: `/auth/login` (로그인)
+
+```tsx
+{
+    "email": "tester1@test.com",
+    "password": "1234"
+}
+```
+
+<br/>
+
+POST: `/events` (이벤트 생성)
+
+```tsx
+{
+  "title": "친구 10명 초대 이벤트",
+  "description": "친구 10명을 초대하면 주황 포션을 드려요",
+  "condition": {
+    "type": "INVITE_COUNT",
+    "criteria": {
+      "count": 10
+    }
+  },
+  "period": {
+    "start": "2025-05-21T00:00:00.000Z",
+    "end": "2025-05-25T00:00:00.000Z"
+  },
+  "isActive": true
+}
+```
+
+<br/>
+
+POST: `/rewards` (보상 생성)
+
+```tsx
+{
+  "eventId": "event-id",
+  "type": "POINT",
+  "name": "1000 포인트",
+  "amount": 1000,
+  "meta": {
+    "expiresInDays": 365
+  }
+}
+```
+
+<br/>
+
+POST: `/reward-claims` (보상 요청)
+
+```tsx
+{
+    "rewardId": "reward-id"
+}
+```
+
+<br/>
+
+GET: `/reward-claims` (모든 보상 요청 내역 조회)
+
+```tsx
+// query optional
+{
+    "eventId": "event-id",
+    "userId": "user-id",
+    "progress": 'PENDING' | 'APPROVED' | 'REJECTED'
+}
+```
+
+<br/>
+
+GET: `/my/reward-claims` (나의 모든 보상 요청 내역 조회)
+
+```tsx
+// query optional    
+{
+    "eventId": "event-id",
+    "progress": 'PENDING' | 'APPROVED' | 'REJECTED'
+}
+```
