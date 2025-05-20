@@ -34,6 +34,7 @@ export class GatewayController {
     return await this.gatewayService.register(dto);
   }
 
+  @Public()
   @UseGuards(LocalAuthGuard)
   @Post('/auth/login')
   async login(@User() user: BaseUser) {
