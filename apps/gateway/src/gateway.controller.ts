@@ -19,7 +19,6 @@ import { User } from './decorators/user.decorator';
 import { AuthUser, BaseUser } from '@app/common';
 import { Roles } from './role/role.decorator';
 import { UserRole } from '@app/common/enums/user-role.enum';
-import { RolesGuard } from './role/role.guard';
 import { RewardClaimsFilterQueryDto } from './dto/get.list-reward-claims.filter-query.dto';
 import { MyRewardClaimsFilterQueryDto } from './dto/get.my.list-reward-claims.filter-query.dto';
 import { Public } from './decorators/public.decorator';
@@ -35,7 +34,6 @@ export class GatewayController {
     return await this.gatewayService.register(dto);
   }
 
-  @Public()
   @UseGuards(LocalAuthGuard)
   @Post('/auth/login')
   async login(@User() user: BaseUser) {
@@ -43,7 +41,6 @@ export class GatewayController {
   }
 
   // event - events
-  @UseGuards(RolesGuard)
   @Roles(UserRole.OPERATOR, UserRole.ADMIN)
   @Post('/events')
   async createEvent(@Body() dto: CreateEventReqDto, @User() user: AuthUser) {
@@ -61,7 +58,6 @@ export class GatewayController {
   }
 
   // event - rewards
-  @UseGuards(RolesGuard)
   @Roles(UserRole.OPERATOR, UserRole.ADMIN)
   @Post('/rewards')
   async createReward(@Body() dto: CreateRewardReqDto, @User() user: AuthUser) {
@@ -79,21 +75,18 @@ export class GatewayController {
   }
 
   // event - claims
-  @UseGuards(RolesGuard)
   @Roles(UserRole.USER)
   @Post('/reward-claims')
   async createRewardClaim(@Body() dto: CreateRewardClaimReqDto, @User() user: AuthUser) {
     return await this.gatewayService.createRewardClaim(dto, user);
   }
 
-  @UseGuards(RolesGuard)
   @Roles(UserRole.OPERATOR, UserRole.ADMIN, UserRole.AUDITOR)
   @Get('/reward-claims')
   async listRewardClaims(@Query() query: RewardClaimsFilterQueryDto) {
     return this.gatewayService.listRewardClaims(query);
   }
 
-  @UseGuards(RolesGuard)
   @Roles(UserRole.OPERATOR, UserRole.ADMIN, UserRole.AUDITOR)
   @Get('/reward-claims/:id')
   async getRewardClaimById(@Param('id') id: string) {
@@ -101,14 +94,12 @@ export class GatewayController {
   }
 
   // 유저용
-  @UseGuards(RolesGuard)
   @Roles(UserRole.USER)
   @Get('/my/reward-claims')
   async listMyRewardClaims(@Query() query: MyRewardClaimsFilterQueryDto, @User() user: AuthUser) {
     return this.gatewayService.listMyRewardClaims(query, user);
   }
 
-  @UseGuards(RolesGuard)
   @Roles(UserRole.USER)
   @Get('/my/reward-claims/:id')
   async getMyRewardClaimById(@Param('id') id: string, @User() user: AuthUser) {

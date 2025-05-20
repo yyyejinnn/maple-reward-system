@@ -23,6 +23,16 @@ import { RolesGuard } from './role/role.guard';
   ],
   controllers: [GatewayController],
   providers: [
+    // JwtGuard -> RoleGuard
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
@@ -31,16 +41,6 @@ import { RolesGuard } from './role/role.guard';
       provide: APP_INTERCEPTOR,
       useClass: HttpResponseInterceptor,
     },
-
-    // JwtGuard -> RoleGuard
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: RolesGuard,
-    // },
 
     GatewayService,
   ],

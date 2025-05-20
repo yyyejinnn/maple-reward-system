@@ -20,8 +20,6 @@ export class EventService {
   async createEvent(dto: CreateEventPayloadDto) {
     const { title, description, condition, period, isActive, createdBy } = dto;
 
-    // reward optional로 같이 생성할 수 있도록 (트랜젝션 고려)
-
     this.validateEventConditionStruc(condition);
     this.validateEventPeriod(period);
 
@@ -30,7 +28,7 @@ export class EventService {
       description,
       condition,
       period,
-      isActive, // 향후 자동 비활성화 로직이 도입된다면 별도 처리
+      isActive,
       createdBy,
     });
   }
